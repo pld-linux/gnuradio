@@ -88,7 +88,7 @@ GNU Radio examples
 %patch0 -p1
 
 # force regeneration of cached moc output files (for final tarballs)
-find -name "*_moc.cc" -exec rm "{}" ";"
+find -name "*_moc.cc" | xargs -r rm
 
 %build
 %{__libtoolize}
@@ -157,10 +157,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/qt_digital_window.ui
 %attr(755,root,root) %{_bindir}/usrp_display_qtgui.ui
 %attr(755,root,root) %{_bindir}/usrp_*.py
-%attr(755,root,root) %ghost %{_libdir}/libgnuradio-*.so.*.*
-%attr(755,root,root) %{_libdir}/libgnuradio-*.so.?
-%attr(755,root,root) %ghost %{_libdir}/libgruel-*.so.*.*
-%attr(755,root,root) %{_libdir}/libgruel-*.so.?
+%attr(755,root,root) %{_libdir}/libgnuradio-*.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgnuradio-*.so.0
+%attr(755,root,root) %{_libdir}/libgruel-*.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgruel-*.so.0
 %dir %{_libdir}/gnuradio
 %attr(755,root,root) %{_libdir}/gnuradio/grc_setup_freedesktop
 %{_datadir}/gnuradio
