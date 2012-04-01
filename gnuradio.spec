@@ -9,7 +9,7 @@
 Summary:	Software defined radio framework
 Name:		gnuradio
 Version:	3.5.3
-Release:	0.%{snaps}.3
+Release:	0.%{snaps}.4
 License:	GPL v3
 Group:		Applications/Engineering
 URL:		http://www.gnuradio.org/
@@ -179,27 +179,30 @@ rm -rf $RPM_BUILD_ROOT
 %{py_sitedir}/gnuradio/gr/*.py*
 %attr(755,root,root) %{py_sitedir}/gnuradio/gr/*.so
 %dir %{py_sitedir}/gnuradio/digital
+%{py_sitedir}/gnuradio/digital/*.py*
 %attr(755,root,root) %{py_sitedir}/gnuradio/digital/*.so
+%dir %{py_sitedir}/gnuradio/digital/utils
+%{py_sitedir}/gnuradio/digital/utils/*.py*
 %dir %{py_sitedir}/gnuradio/audio
 %{py_sitedir}/gnuradio/audio/*.py*
 %attr(755,root,root) %{py_sitedir}/gnuradio/audio/*.so
 %dir %{py_sitedir}/gnuradio/vocoder
-%{py_sitedir}/gnuradio/*.py*
+%{py_sitedir}/gnuradio/vocoder/*.py*
 %attr(755,root,root) %{py_sitedir}/gnuradio/vocoder/*.so
 %dir %{py_sitedir}/gnuradio/noaa
-%{py_sitedir}/gnuradio/*/*.py*
+%{py_sitedir}/gnuradio/noaa/*.py*
 %attr(755,root,root) %{py_sitedir}/gnuradio/noaa/*.so
 %dir %{py_sitedir}/gnuradio/pager
+%{py_sitedir}/gnuradio/pager/*.py*
 %attr(755,root,root) %{py_sitedir}/gnuradio/pager/*.so
 %dir %{py_sitedir}/gnuradio/qtgui
-%{py_sitedir}/gnuradio/*.py*
+%{py_sitedir}/gnuradio/qtgui/*.py*
 %attr(755,root,root) %{py_sitedir}/gnuradio/qtgui/*.so
 %{py_sitedir}/gnuradio/blks2
 %{py_sitedir}/gnuradio/blks2impl
-%{py_sitedir}/gnuradio/digital
 %{py_sitedir}/gnuradio/grc
+%{py_sitedir}/gnuradio/gru
 %{py_sitedir}/gnuradio/gruimpl
-%{py_sitedir}/gnuradio/pager
 %{py_sitedir}/gnuradio/wxgui
 %{py_sitedir}/grc_gnuradio
 %exclude %{_datadir}/gnuradio/examples
