@@ -1,0 +1,8 @@
+--- gnuradio/gr-qtgui/lib/Makefile.am~	2011-10-23 20:06:37.000000000 +0200
++++ gnuradio/gr-qtgui/lib/Makefile.am	2012-04-01 16:28:11.377579704 +0200
+@@ -92,4 +92,5 @@
+ 	$(BOOST_THREAD_LIB) 		\
+ 	$(BOOST_DATE_TIME_LIB) 		\
+ 	-lstdc++			\
++	-lpython			\
+ 	$(QT_LIBS)

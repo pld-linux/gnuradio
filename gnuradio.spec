@@ -9,16 +9,17 @@
 Summary:	Software defined radio framework
 Name:		gnuradio
 Version:	3.5.3
-Release:	0.%{snaps}.0.1
+Release:	0.%{snaps}.1
 License:	GPL v3
 Group:		Applications/Engineering
 URL:		http://www.gnuradio.org
 Source0:	http://gnuradio.org/files/builds/%{name}-%{version}-%{snap}.tar.gz
 # Source0-md5:	597245618a773bad2ff6b973e83d5bcb
+Patch0:		%{name}-build.patch
 BuildRequires:	SDL-devel
 BuildRequires:	alsa-lib-devel
 BuildRequires:	autoconf
-BuildRequires:	automake
+BuildRequires:	automake >= 1:1.11.3-2
 BuildRequires:	boost-devel >= 1.35
 BuildRequires:	cppunit-devel
 BuildRequires:	doxygen
@@ -46,14 +47,14 @@ BuildRequires:	texlive-latex
 %{?with_uhd:BuildRequires:	uhd-devel}
 BuildRequires:	xdg-utils
 BuildRequires:	xmlto
-Requires:	PyQt4
+Requires:	python-PyQt4
 Requires:	portaudio
 Requires:	python-cheetah
 Requires:	python-lxml
 Requires:	python-numpy
 Requires:	python-pygtk-gtk
 Requires:	python-wxPython
-Requires:	scipy
+Requires:	python-scipy
 Obsoletes:	grc < 0.80-1
 Obsoletes:	usrp < 3.3.0-1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -74,14 +75,6 @@ Obsoletes:	usrp-devel < 3.3.0-1
 %description devel
 GNU Radio Headers
 
-%package doc
-Summary:	GNU Radio
-Group:		Applications/Engineering
-Requires:	%{name} = %{version}-%{release}
-
-%description doc
-GNU Radio Documentation
-
 %package examples
 Summary:	GNU Radio
 Group:		Applications/Engineering
@@ -92,13 +85,17 @@ GNU Radio examples
 
 %prep
 %setup -q -n %{name}
+%patch0 -p1
 
 #force regeneration of cached moc output files
 find . -name "*_moc.cc" -exec rm {} \;
 
 %build
-./bootstrap
-#enabling deps tracking is workaround to build
+%{__libtoolize}
+%{__aclocal} -I config
+%{__autoheader}
+%{__automake} -Wno-portability -Wno-override -Wnone
+%{__autoconf}
 %configure \
 	--enable-dependency-tracking \
 	--enable-python \
@@ -129,48 +126,82 @@ find . -name "*_moc.cc" -exec rm {} \;
 	--enable-docs \
 	--with-boost-libdir=%{_libdir}
 
-sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
-
-%{__make} clean
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
+%{__make} install -j1 \
 	DESTDIR=$RPM_BUILD_ROOT
+
+install -d inst-doc
+mv $RPM_BUILD_ROOT%{_docdir}/gnuradio-*/* inst-doc/
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -n gnuradio -p /sbin/ldconfig
-%postun -n gnuradio -p /sbin/ldconfig
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
-%{py_sitedir}/*
-%attr(755,root,root) %{_bindir}/*
-%{_libdir}/lib*.so.*
-%{_libexecdir}/*
-%{_datadir}/gnuradio
-%config(noreplace) %{_sysconfdir}/gnuradio/conf.d/*.conf
-%exclude %{_datadir}/gnuradio/examples
-%exclude %{py_sitedir}/gnuradio/*.la
-%exclude %{_docdir}/%{name}-%{version}/html
-%exclude %{_docdir}/%{name}-%{version}/xml
 %doc ChangeLog NEWS INSTALL COPYING AUTHORS
+%doc inst-doc/*
+%attr(755,root,root) %{_bindir}/create-gnuradio-out-of-tree-project
+%attr(755,root,root) %{_bindir}/file_rx_*.py
+%attr(755,root,root) %{_bindir}/gnuradio-*
+%attr(755,root,root) %{_bindir}/gr_*.py
+%attr(755,root,root) %{_bindir}/hrpt_*.py
+%attr(755,root,root) %{_bindir}/qt_digital_window.ui
+%attr(755,root,root) %{_bindir}/usrp_display_qtgui.ui
+%attr(755,root,root) %{_bindir}/usrp_*.py
+%attr(755,root,root) %ghost %{_libdir}/libgnuradio-*.so.*.*
+%attr(755,root,root) %{_libdir}/libgnuradio-*.so.?
+%attr(755,root,root) %ghost %{_libdir}/libgruel-*.so.*.*
+%attr(755,root,root) %{_libdir}/libgruel-*.so.?
+%dir %{_libdir}/gnuradio
+%attr(755,root,root) %{_libdir}/gnuradio/grc_setup_freedesktop
+%{_datadir}/gnuradio
+%dir %{_sysconfdir}/gnuradio
+%dir %{_sysconfdir}/gnuradio/conf.d
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gnuradio/conf.d/*.conf
+%{py_sitescriptdir}/gruel
+%{py_sitescriptdir}/grc_gnuradio
+%{py_sitescriptdir}/gnuradio
+%dir %{py_sitedir}/gruel
+%dir %{py_sitedir}/gruel/pmt
+%attr(755,root,root) %{py_sitedir}/gruel/pmt/*.so
+%dir %{py_sitedir}/gnuradio
+%attr(755,root,root) %{py_sitedir}/gnuradio/*.so
+%dir %{py_sitedir}/gnuradio/gr
+%attr(755,root,root) %{py_sitedir}/gnuradio/gr/*.so
+%dir %{py_sitedir}/gnuradio/digital
+%attr(755,root,root) %{py_sitedir}/gnuradio/digital/*.so
+%dir %{py_sitedir}/gnuradio/audio
+%attr(755,root,root) %{py_sitedir}/gnuradio/audio/*.so
+%dir %{py_sitedir}/gnuradio/vocoder
+%attr(755,root,root) %{py_sitedir}/gnuradio/vocoder/*.so
+%dir %{py_sitedir}/gnuradio/noaa
+%attr(755,root,root) %{py_sitedir}/gnuradio/noaa/*.so
+%dir %{py_sitedir}/gnuradio/pager
+%attr(755,root,root) %{py_sitedir}/gnuradio/pager/*.so
+%dir %{py_sitedir}/gnuradio/qtgui
+%attr(755,root,root) %{py_sitedir}/gnuradio/qtgui/*.so
+%exclude %{_datadir}/gnuradio/examples
+%exclude %{py_sitedir}/gruel/*/*.la
+%exclude %{py_sitedir}/gnuradio/*.la
+%exclude %{py_sitedir}/gnuradio/*/*.la
 
 %files devel
 %defattr(644,root,root,755)
-%{_includedir}/*
-%{_libdir}/lib*.so
-%{_pkgconfigdir}/*.pc
+%{_includedir}/gnuradio
+%{_includedir}/gruel
+%attr(755,root,root) %{_libdir}/libgnuradio-*.so
+%attr(755,root,root) %{_libdir}/libgruel.so
+%{_pkgconfigdir}/gnuradio-*.pc
+%{_pkgconfigdir}/gr-wxgui.pc
+%{_pkgconfigdir}/gruel.pc
 %exclude %{_libdir}/*.la
-
-%files doc
-%defattr(644,root,root,755)
-%doc %{_docdir}/%{name}-%{version}/html
-%doc %{_docdir}/%{name}-%{version}/xml
 
 %files examples
 %defattr(644,root,root,755)
