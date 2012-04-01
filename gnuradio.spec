@@ -9,7 +9,7 @@
 Summary:	Software defined radio framework
 Name:		gnuradio
 Version:	3.5.3
-Release:	0.%{snaps}.1
+Release:	0.%{snaps}.2
 License:	GPL v3
 Group:		Applications/Engineering
 URL:		http://www.gnuradio.org/
@@ -132,6 +132,7 @@ find -name "*_moc.cc" | xargs rm
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install -j1 \
+	pythondir=%{py_sitedir} \
 	DESTDIR=$RPM_BUILD_ROOT
 
 rm -rf inst-doc
@@ -166,28 +167,41 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sysconfdir}/gnuradio
 %dir %{_sysconfdir}/gnuradio/conf.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gnuradio/conf.d/*.conf
-%{py_sitescriptdir}/gruel
-%{py_sitescriptdir}/grc_gnuradio
-%{py_sitescriptdir}/gnuradio
 %dir %{py_sitedir}/gruel
+%{py_sitedir}/gruel/*.py*
 %dir %{py_sitedir}/gruel/pmt
+%{py_sitedir}/gruel/pmt/*.py*
 %attr(755,root,root) %{py_sitedir}/gruel/pmt/*.so
 %dir %{py_sitedir}/gnuradio
+%{py_sitedir}/gnuradio/*.py*
 %attr(755,root,root) %{py_sitedir}/gnuradio/*.so
 %dir %{py_sitedir}/gnuradio/gr
+%{py_sitedir}/gnuradio/gr/*.py*
 %attr(755,root,root) %{py_sitedir}/gnuradio/gr/*.so
 %dir %{py_sitedir}/gnuradio/digital
 %attr(755,root,root) %{py_sitedir}/gnuradio/digital/*.so
 %dir %{py_sitedir}/gnuradio/audio
+%{py_sitedir}/gnuradio/audio/*.py*
 %attr(755,root,root) %{py_sitedir}/gnuradio/audio/*.so
 %dir %{py_sitedir}/gnuradio/vocoder
+%{py_sitedir}/gnuradio/*.py*
 %attr(755,root,root) %{py_sitedir}/gnuradio/vocoder/*.so
 %dir %{py_sitedir}/gnuradio/noaa
+%{py_sitedir}/gnuradio/*/*.py*
 %attr(755,root,root) %{py_sitedir}/gnuradio/noaa/*.so
 %dir %{py_sitedir}/gnuradio/pager
 %attr(755,root,root) %{py_sitedir}/gnuradio/pager/*.so
 %dir %{py_sitedir}/gnuradio/qtgui
+%{py_sitedir}/gnuradio/*.py*
 %attr(755,root,root) %{py_sitedir}/gnuradio/qtgui/*.so
+%{py_sitedir}/gnuradio/blks2
+%{py_sitedir}/gnuradio/blks2impl
+%{py_sitedir}/gnuradio/digital
+%{py_sitedir}/gnuradio/grc
+%{py_sitedir}/gnuradio/gruimpl
+%{py_sitedir}/gnuradio/pager
+%{py_sitedir}/gnuradio/wxgui
+%{py_sitedir}/grc_gnuradio
 %exclude %{_datadir}/gnuradio/examples
 %exclude %{py_sitedir}/gruel/*/*.la
 %exclude %{py_sitedir}/gnuradio/*.la
