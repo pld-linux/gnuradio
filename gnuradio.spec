@@ -12,7 +12,7 @@ Version:	3.5.3
 Release:	0.%{snaps}.1
 License:	GPL v3
 Group:		Applications/Engineering
-URL:		http://www.gnuradio.org
+URL:		http://www.gnuradio.org/
 Source0:	http://gnuradio.org/files/builds/%{name}-%{version}-%{snap}.tar.gz
 # Source0-md5:	597245618a773bad2ff6b973e83d5bcb
 Patch0:		%{name}-build.patch
@@ -47,14 +47,14 @@ BuildRequires:	texlive-latex
 %{?with_uhd:BuildRequires:	uhd-devel}
 BuildRequires:	xdg-utils
 BuildRequires:	xmlto
-Requires:	python-PyQt4
 Requires:	portaudio
+Requires:	python-PyQt4
 Requires:	python-cheetah
 Requires:	python-lxml
 Requires:	python-numpy
 Requires:	python-pygtk-gtk
-Requires:	python-wxPython
 Requires:	python-scipy
+Requires:	python-wxPython
 Obsoletes:	grc < 0.80-1
 Obsoletes:	usrp < 3.3.0-1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -87,8 +87,8 @@ GNU Radio examples
 %setup -q -n %{name}
 %patch0 -p1
 
-#force regeneration of cached moc output files
-find . -name "*_moc.cc" -exec rm {} \;
+# force regeneration of cached moc output files
+find -name "*_moc.cc" | xargs rm
 
 %build
 %{__libtoolize}
@@ -134,14 +134,15 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install -j1 \
 	DESTDIR=$RPM_BUILD_ROOT
 
+rm -rf inst-doc
 install -d inst-doc
-mv $RPM_BUILD_ROOT%{_docdir}/gnuradio-*/* inst-doc/
+mv $RPM_BUILD_ROOT%{_docdir}/gnuradio-*/* inst-doc
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
