@@ -4,17 +4,17 @@
 %bcond_with	uhd
 %bcond_with	volk
 #
-%define	snap	2012-03-26
+%define	snap	2012-04-02
 %define	snaps	%(echo %{snap} | tr -d "-")
 Summary:	Software defined radio framework
 Name:		gnuradio
 Version:	3.5.3
-Release:	0.%{snaps}.5
+Release:	0.%{snaps}.1
 License:	GPL v3
 Group:		Applications/Engineering
 URL:		http://www.gnuradio.org/
 Source0:	http://gnuradio.org/files/builds/%{name}-%{version}-%{snap}.tar.gz
-# Source0-md5:	597245618a773bad2ff6b973e83d5bcb
+# Source0-md5:	9d839403ef713a07e07131e4fc19a543
 Patch0:		%{name}-build.patch
 BuildRequires:	SDL-devel
 BuildRequires:	alsa-lib-devel
