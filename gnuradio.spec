@@ -9,7 +9,7 @@
 Summary:	Software defined radio framework
 Name:		gnuradio
 Version:	3.5.3
-Release:	0.%{snaps}.1
+Release:	0.%{snaps}.2
 License:	GPL v3
 Group:		Applications/Engineering
 URL:		http://www.gnuradio.org/
