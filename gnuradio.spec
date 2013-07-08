@@ -6,10 +6,11 @@
 #
 %define	snap	2012-04-02
 %define	snaps	%(echo %{snap} | tr -d "-")
+%define		rel	4
 Summary:	Software defined radio framework
 Name:		gnuradio
 Version:	3.5.3
-Release:	0.%{snaps}.3
+Release:	0.%{snaps}.%{rel}
 License:	GPL v3
 Group:		Applications/Engineering
 URL:		http://www.gnuradio.org/
