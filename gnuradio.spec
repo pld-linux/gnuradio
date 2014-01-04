@@ -4,29 +4,26 @@
 %bcond_with	uhd
 %bcond_with	volk
 #
-%define	snap	2012-04-02
-%define	snaps	%(echo %{snap} | tr -d "-")
-%define		rel	4
 Summary:	Software defined radio framework
 Name:		gnuradio
-Version:	3.5.3
-Release:	0.%{snaps}.%{rel}
+Version:	3.7.2.1
+Release:	0.1
 License:	GPL v3
 Group:		Applications/Engineering
-URL:		http://www.gnuradio.org/
-Source0:	http://gnuradio.org/files/builds/%{name}-%{version}-%{snap}.tar.gz
-# Source0-md5:	9d839403ef713a07e07131e4fc19a543
+Source0:	http://gnuradio.org/files/builds/%{name}-%{version}.tar.gz
+# Source0-md5:	f2ea23a30cb02802870fe8cb9bf272c9
 Patch0:		%{name}-build.patch
+URL:		http://www.gnuradio.org/
+# python-pygtk-gtk python-PyOpenGL jack-audio-connection-kit-devel pulseaudio-devel
 BuildRequires:	SDL-devel
 BuildRequires:	alsa-lib-devel
-BuildRequires:	autoconf
-BuildRequires:	automake >= 1:1.11.3-2
+BuildRequires:	cmake
 BuildRequires:	boost-devel >= 1.35
 BuildRequires:	cppunit-devel
 BuildRequires:	doxygen
-BuildRequires:	fftw3-devel
+BuildRequires:	fftw3-devel >= 3.0
 BuildRequires:	graphviz
-BuildRequires:	gsl-devel
+BuildRequires:	gsl-devel >= 1.10
 BuildRequires:	guile-devel
 BuildRequires:	libtool
 BuildRequires:	libtool
@@ -35,11 +32,11 @@ BuildRequires:	orc-devel
 BuildRequires:	portaudio-devel
 BuildRequires:	python-PyQt4-devel
 BuildRequires:	python-PyQwt-devel
-BuildRequires:	python-cheetah
-BuildRequires:	python-devel
-BuildRequires:	python-lxml
+BuildRequires:	python-cheetah >= 2.0.0
+BuildRequires:	python-devel >= 2.5
+BuildRequires:	python-lxml >= 1.3.6
 BuildRequires:	python-numpy
-BuildRequires:	python-pygtk-devel
+BuildRequires:	python-pygtk-devel >= 2.10.0
 BuildRequires:	python-wxPython-devel
 BuildRequires:	qwt-devel
 BuildRequires:	sdcc
@@ -48,6 +45,10 @@ BuildRequires:	texlive-latex
 %{?with_uhd:BuildRequires:	uhd-devel}
 BuildRequires:	xdg-utils
 BuildRequires:	xmlto
+BuildConflicts:	boost-devel = 1.46.0
+BuildConflicts:	boost-devel = 1.46.1
+BuildConflicts:	boost-devel = 1.47.0
+BuildConflicts:	boost-devel = 1.52.0
 Requires:	portaudio
 Requires:	python-PyQt4
 Requires:	python-cheetah
