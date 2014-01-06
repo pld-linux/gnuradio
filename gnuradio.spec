@@ -80,6 +80,8 @@ Obsoletes:	grc < 0.80-1
 Obsoletes:	usrp < 3.3.0-1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%define		filterout_cpp	-pipe
+
 %description
 GNU Radio is a collection of software that when combined with minimal
 hardware, allows the construction of radios where the actual waveforms
