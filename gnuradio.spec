@@ -1,8 +1,6 @@
 # TODO:
-# - fix volk, drop bcond and enable by default
 # - fix uhd build
 %bcond_with	uhd
-%bcond_with	volk
 #
 Summary:	Software defined radio framework
 Name:		gnuradio
@@ -12,7 +10,6 @@ License:	GPL v3
 Group:		Applications/Engineering
 Source0:	http://gnuradio.org/files/builds/%{name}-%{version}.tar.gz
 # Source0-md5:	f2ea23a30cb02802870fe8cb9bf272c9
-Patch0:		%{name}-build.patch
 URL:		http://www.gnuradio.org/
 BuildRequires:	SDL-devel >= 1.2.0
 BuildRequires:	Qt3Support >= 4.8
@@ -87,7 +84,7 @@ that it turns the digital modulation schemes used in today's high
 performance wireless devices into software problems.
 
 %package devel
-Summary:	GNU Radio
+Summary:	GNU Radio development files
 Group:		Applications/Engineering
 Requires:	%{name} = %{version}-%{release}
 Obsoletes:	usrp-devel < 3.3.0-1
@@ -96,7 +93,7 @@ Obsoletes:	usrp-devel < 3.3.0-1
 GNU Radio Headers.
 
 %package examples
-Summary:	GNU Radio
+Summary:	GNU Radio examples
 Group:		Applications/Engineering
 Requires:	%{name} = %{version}-%{release}
 
@@ -104,54 +101,19 @@ Requires:	%{name} = %{version}-%{release}
 GNU Radio examples.
 
 %prep
-%setup -q -n %{name}
-%patch0 -p1
-
-# force regeneration of cached moc output files (for final tarballs)
-find -name "*_moc.cc" | xargs -r rm
+%setup -q
+sed '/Prevented in-tree build. This is bad practice./d' -i CMakeLists.txt
 
 %build
-%{__libtoolize}
-%{__aclocal} -I config
-%{__autoheader}
-%{__automake} -Wno-portability -Wno-override -Wnone
-%{__autoconf}
-%configure \
-	--enable-dependency-tracking \
-	--enable-python \
-	--enable-doxygen \
-	--enable-dot \
-	--%{?with_volk:en}%{!?with_volk:dis}able-volk \
-	--enable-gruel \
-	--enable-gnuradio-core \
-	--enable-gr-msdd6000 \
-	--enable-gr-audio \
-	--enable-gr-atsc \
-	--enable-gr-cvsd-vocoder \
-	--enable-gr-gpio \
-	%{?with_uhd:--enable-gr-uhd} \
-	--enable-gr-gsm-fr-vocoder \
-	--enable-gr-noaa \
-	--enable-gr-pager \
-	--enable-gr-radar-pager \
-	--enable-gr-radar-mono \
-	--enable-gr-radio-astronomy \
-	--enable-gr-trellis \
-	--enable-gr-video-sdl \
-	--enable-gr-wxgui \
-	--enable-gr-sounder \
-	--enable-gr-utils \
-	--enable-gnuradio-examples \
-	--enable-grc \
-	--enable-docs \
-	--with-boost-libdir=%{_libdir}
-
+%{__mkdir_p} build
+cd build
+%cmake ..
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install -j1 \
+%{__make} install \
 	pythondir=%{py_sitedir} \
 	DESTDIR=$RPM_BUILD_ROOT
 
@@ -167,79 +129,75 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog NEWS INSTALL COPYING AUTHORS
+%doc README.hacking
 %doc inst-doc/*
-%attr(755,root,root) %{_bindir}/create-gnuradio-out-of-tree-project
-%attr(755,root,root) %{_bindir}/file_rx_*.py
 %attr(755,root,root) %{_bindir}/gnuradio-*
-%attr(755,root,root) %{_bindir}/gr_*.py
-%attr(755,root,root) %{_bindir}/hrpt_*.py
-%attr(755,root,root) %{_bindir}/qt_digital_window.ui
-%attr(755,root,root) %{_bindir}/usrp_display_qtgui.ui
-%attr(755,root,root) %{_bindir}/usrp_*.py
+%attr(755,root,root) %{_bindir}/gr_*
+%attr(755,root,root) %{_bindir}/grcc
 %attr(755,root,root) %{_libdir}/libgnuradio-*.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgnuradio-*.so.0
-%attr(755,root,root) %{_libdir}/libgruel-*.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgruel-*.so.0
-%dir %{_libdir}/gnuradio
-%attr(755,root,root) %{_libdir}/gnuradio/grc_setup_freedesktop
-%{_datadir}/gnuradio
+%attr(755,root,root) %{_libdir}/libvolk-*.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libvolk-*.so.0
 %dir %{_sysconfdir}/gnuradio
 %dir %{_sysconfdir}/gnuradio/conf.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gnuradio/conf.d/*.conf
-%dir %{py_sitedir}/gruel
-%{py_sitedir}/gruel/*.py*
-%dir %{py_sitedir}/gruel/pmt
-%{py_sitedir}/gruel/pmt/*.py*
-%attr(755,root,root) %{py_sitedir}/gruel/pmt/*.so
-%dir %{py_sitedir}/gnuradio
-%{py_sitedir}/gnuradio/*.py*
-%attr(755,root,root) %{py_sitedir}/gnuradio/*.so
-%dir %{py_sitedir}/gnuradio/gr
-%{py_sitedir}/gnuradio/gr/*.py*
-%attr(755,root,root) %{py_sitedir}/gnuradio/gr/*.so
-%dir %{py_sitedir}/gnuradio/digital
-%{py_sitedir}/gnuradio/digital/*.py*
-%attr(755,root,root) %{py_sitedir}/gnuradio/digital/*.so
-%dir %{py_sitedir}/gnuradio/digital/utils
-%{py_sitedir}/gnuradio/digital/utils/*.py*
-%dir %{py_sitedir}/gnuradio/audio
-%{py_sitedir}/gnuradio/audio/*.py*
-%attr(755,root,root) %{py_sitedir}/gnuradio/audio/*.so
-%dir %{py_sitedir}/gnuradio/vocoder
-%{py_sitedir}/gnuradio/vocoder/*.py*
-%attr(755,root,root) %{py_sitedir}/gnuradio/vocoder/*.so
-%dir %{py_sitedir}/gnuradio/noaa
-%{py_sitedir}/gnuradio/noaa/*.py*
-%attr(755,root,root) %{py_sitedir}/gnuradio/noaa/*.so
-%dir %{py_sitedir}/gnuradio/pager
-%{py_sitedir}/gnuradio/pager/*.py*
-%attr(755,root,root) %{py_sitedir}/gnuradio/pager/*.so
-%dir %{py_sitedir}/gnuradio/qtgui
-%{py_sitedir}/gnuradio/qtgui/*.py*
-%attr(755,root,root) %{py_sitedir}/gnuradio/qtgui/*.so
-%{py_sitedir}/gnuradio/blks2
-%{py_sitedir}/gnuradio/blks2impl
-%{py_sitedir}/gnuradio/grc
-%{py_sitedir}/gnuradio/gru
-%{py_sitedir}/gnuradio/gruimpl
-%{py_sitedir}/gnuradio/wxgui
-%{py_sitedir}/grc_gnuradio
+
+%dir %{py_sitedir}/*
+#%dir %{py_sitedir}/gruel
+#%{py_sitedir}/gruel/*.py*
+#%dir %{py_sitedir}/gruel/pmt
+#%{py_sitedir}/gruel/pmt/*.py*
+#%attr(755,root,root) %{py_sitedir}/gruel/pmt/*.so
+#%dir %{py_sitedir}/gnuradio
+#%{py_sitedir}/gnuradio/*.py*
+#%attr(755,root,root) %{py_sitedir}/gnuradio/*.so
+#%dir %{py_sitedir}/gnuradio/gr
+#%{py_sitedir}/gnuradio/gr/*.py*
+#%attr(755,root,root) %{py_sitedir}/gnuradio/gr/*.so
+#%dir %{py_sitedir}/gnuradio/digital
+#%{py_sitedir}/gnuradio/digital/*.py*
+#%attr(755,root,root) %{py_sitedir}/gnuradio/digital/*.so
+#%dir %{py_sitedir}/gnuradio/digital/utils
+#%{py_sitedir}/gnuradio/digital/utils/*.py*
+#%dir %{py_sitedir}/gnuradio/audio
+#%{py_sitedir}/gnuradio/audio/*.py*
+#%attr(755,root,root) %{py_sitedir}/gnuradio/audio/*.so
+#%dir %{py_sitedir}/gnuradio/vocoder
+#%{py_sitedir}/gnuradio/vocoder/*.py*
+#%attr(755,root,root) %{py_sitedir}/gnuradio/vocoder/*.so
+#%dir %{py_sitedir}/gnuradio/noaa
+#%{py_sitedir}/gnuradio/noaa/*.py*
+#%attr(755,root,root) %{py_sitedir}/gnuradio/noaa/*.so
+#%dir %{py_sitedir}/gnuradio/pager
+#%{py_sitedir}/gnuradio/pager/*.py*
+#%attr(755,root,root) %{py_sitedir}/gnuradio/pager/*.so
+#%dir %{py_sitedir}/gnuradio/qtgui
+#%{py_sitedir}/gnuradio/qtgui/*.py*
+#%attr(755,root,root) %{py_sitedir}/gnuradio/qtgui/*.so
+
+#%{py_sitedir}/gnuradio/blks2
+#%{py_sitedir}/gnuradio/blks2impl
+#%{py_sitedir}/gnuradio/grc
+#%{py_sitedir}/gnuradio/gru
+#%{py_sitedir}/gnuradio/gruimpl
+#%{py_sitedir}/gnuradio/wxgui
+#%{py_sitedir}/grc_gnuradio
+
+%{_datadir}/gnuradio
+%exclude %{_datadir}/gnuradio/gr-newmod
 %exclude %{_datadir}/gnuradio/examples
-%exclude %{py_sitedir}/gruel/*/*.la
-%exclude %{py_sitedir}/gnuradio/*.la
-%exclude %{py_sitedir}/gnuradio/*/*.la
 
 %files devel
 %defattr(644,root,root,755)
 %{_includedir}/gnuradio
-%{_includedir}/gruel
+%{_includedir}/pmt
+%{_includedir}/volk
 %attr(755,root,root) %{_libdir}/libgnuradio-*.so
-%attr(755,root,root) %{_libdir}/libgruel.so
+%attr(755,root,root) %{_libdir}/libvolk.so
 %{_pkgconfigdir}/gnuradio-*.pc
 %{_pkgconfigdir}/gr-wxgui.pc
-%{_pkgconfigdir}/gruel.pc
-%exclude %{_libdir}/*.la
+%{_pkgconfigdir}/volk.pc
+%{_datadir}/gnuradio/gr-newmod
 
 %files examples
 %defattr(644,root,root,755)
