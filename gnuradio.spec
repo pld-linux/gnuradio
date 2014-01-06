@@ -82,6 +82,8 @@ Obsoletes:	usrp < 3.3.0-1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		filterout_cpp	-pipe
+# pthread_create, pthread_join, pthread_detach - not used from within this
+%define		skip_post_check_so	libgnuradio-blocks-3.7.2.1.so.0.0.0
 
 %description
 GNU Radio is a collection of software that when combined with minimal
@@ -109,7 +111,11 @@ GNU Radio examples.
 
 %prep
 %setup -q
-sed '/Prevented in-tree build. This is bad practice./d' -i CMakeLists.txt
+sed -e '/Prevented in-tree build. This is bad practice./d' -i CMakeLists.txt
+sed -e 's/list(APPEND gnuradio_runtime_libs rt)/list(APPEND gnuradio_runtime_libs rt pthread)/' -i gnuradio-runtime/lib/CMakeLists.txt
+sed -e 's/list(APPEND gr_audio_libs ${JACK_LIBRARIES})/list(APPEND gr_audio_libs ${JACK_LIBRARIES} pthread)/' -i gr-audio/lib/CMakeLists.txt
+sed -e 's/list(APPEND fcd_libs rt)/list(APPEND fcd_libs rt pthread)/' -i gr-fcd/lib/CMakeLists.txt
+sed -e 's/target_link_libraries(volk ${volk_libraries})/target_link_libraries(volk ${volk_libraries} m)/' -i volk/lib/CMakeLists.txt
 
 %build
 %{__mkdir_p} build
@@ -122,7 +128,6 @@ rm -rf $RPM_BUILD_ROOT
 
 cd build
 %{__make} install \
-	pythondir=%{py_sitedir} \
 	DESTDIR=$RPM_BUILD_ROOT
 
 rm -rf inst-doc
