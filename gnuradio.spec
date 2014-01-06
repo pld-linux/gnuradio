@@ -14,35 +14,53 @@ Source0:	http://gnuradio.org/files/builds/%{name}-%{version}.tar.gz
 # Source0-md5:	f2ea23a30cb02802870fe8cb9bf272c9
 Patch0:		%{name}-build.patch
 URL:		http://www.gnuradio.org/
-# python-pygtk-gtk python-PyOpenGL jack-audio-connection-kit-devel pulseaudio-devel
-BuildRequires:	SDL-devel
-BuildRequires:	alsa-lib-devel
-BuildRequires:	cmake
+BuildRequires:	SDL-devel >= 1.2.0
+BuildRequires:	Qt3Support >= 4.8
+BuildRequires:	QtCLucene-devel >= 4.8
+BuildRequires:	QtCore-devel >= 4.8
+BuildRequires:	QtDBus-devel >= 4.8
+BuildRequires:	QtDeclarative-devel >= 4.8
+BuildRequires:	QtDesigner-devel >= 4.8
+BuildRequires:	QtGui-devel >= 4.8
+BuildRequires:	QtHelp-devel >= 4.8
+BuildRequires:	QtNetwork-devel >= 4.8
+BuildRequires:	QtOpenGL-devel >= 4.8
+BuildRequires:	QtScript-devel >= 4.8
+BuildRequires:	QtScriptTools-devel >= 4.8
+BuildRequires:	QtSql-devel >= 4.8
+BuildRequires:	QtSvg-devel >= 4.8
+BuildRequires:	QtTest-devel >= 4.8
+BuildRequires:	QtUiTools-devel >= 4.8
+BuildRequires:	QtWebKit-devel >= 4.8
+BuildRequires:	QtXml-devel >= 4.8
+BuildRequires:	QtXmlPatterns-devel >= 4.8
+BuildRequires:	alsa-lib-devel >= 0.9
 BuildRequires:	boost-devel >= 1.35
-BuildRequires:	cppunit-devel
-BuildRequires:	doxygen
+BuildRequires:	cmake >= 2.6
+BuildRequires:	cppunit-devel >= 1.9.14
+BuildRequires:	doxygen >= 1.5
 BuildRequires:	fftw3-devel >= 3.0
-BuildRequires:	graphviz
 BuildRequires:	gsl-devel >= 1.10
-BuildRequires:	guile-devel
-BuildRequires:	libtool
-BuildRequires:	libtool
+BuildRequires:	ice-devel
+BuildRequires:	jack-audio-connection-kit-devel >= 0.8
 BuildRequires:	libusb-devel
-BuildRequires:	orc-devel
-BuildRequires:	portaudio-devel
-BuildRequires:	python-PyQt4-devel
-BuildRequires:	python-PyQwt-devel
+BuildRequires:	log4cpp-devel
+BuildRequires:	orc-devel >= 0.4.11
+BuildRequires:	portaudio-devel >= 19
+BuildRequires:	python-PyOpenGL
+BuildRequires:	python-PyQt4-devel >= 4.4
+BuildRequires:	python-PyQwt-devel >= 5.2
 BuildRequires:	python-cheetah >= 2.0.0
 BuildRequires:	python-devel >= 2.5
 BuildRequires:	python-lxml >= 1.3.6
-BuildRequires:	python-numpy
+BuildRequires:	python-numpy >= 1.1.0
 BuildRequires:	python-pygtk-devel >= 2.10.0
-BuildRequires:	python-wxPython-devel
-BuildRequires:	qwt-devel
-BuildRequires:	sdcc
-BuildRequires:	swig
+BuildRequires:	python-wxPython-devel >= 2.8
+BuildRequires:	qwt-devel >= 5.2
+BuildRequires:	sphinx
+BuildRequires:	swig-python >= 1.3.31
 BuildRequires:	texlive-latex
-%{?with_uhd:BuildRequires:	uhd-devel}
+%{?with_uhd:BuildRequires:	uhd-devel >= 3.0.0}
 BuildRequires:	xdg-utils
 BuildRequires:	xmlto
 BuildConflicts:	boost-devel = 1.46.0
@@ -75,7 +93,7 @@ Requires:	%{name} = %{version}-%{release}
 Obsoletes:	usrp-devel < 3.3.0-1
 
 %description devel
-GNU Radio Headers
+GNU Radio Headers.
 
 %package examples
 Summary:	GNU Radio
@@ -83,7 +101,7 @@ Group:		Applications/Engineering
 Requires:	%{name} = %{version}-%{release}
 
 %description examples
-GNU Radio examples
+GNU Radio examples.
 
 %prep
 %setup -q -n %{name}
