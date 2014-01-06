@@ -8,7 +8,7 @@ Version:	3.7.2.1
 Release:	0.1
 License:	GPL v3
 Group:		Applications/Engineering
-Source0:	http://gnuradio.org/files/builds/%{name}-%{version}.tar.gz
+Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
 # Source0-md5:	f2ea23a30cb02802870fe8cb9bf272c9
 URL:		http://www.gnuradio.org/
 BuildRequires:	SDL-devel >= 1.2.0
