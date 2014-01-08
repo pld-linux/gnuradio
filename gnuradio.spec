@@ -50,6 +50,7 @@ BuildRequires:	python-PyQt4-devel >= 4.4
 BuildRequires:	python-PyQwt-devel >= 5.2
 BuildRequires:	python-cheetah >= 2.0.0
 BuildRequires:	python-devel >= 2.5
+BuildRequires:	python-devel-tools
 BuildRequires:	python-ice
 BuildRequires:	python-lxml >= 1.3.6
 BuildRequires:	python-numpy >= 1.1.0
