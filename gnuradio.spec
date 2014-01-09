@@ -134,6 +134,8 @@ rm -rf inst-doc
 install -d inst-doc
 mv $RPM_BUILD_ROOT%{_docdir}/gnuradio-*/* inst-doc
 
+find $RPM_BUILD_ROOT%{py_sitedir} -name \*.py -execdir sh -c '[ -f {}c -o -f {}o ] && %{__rm} -f {}' \;
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
