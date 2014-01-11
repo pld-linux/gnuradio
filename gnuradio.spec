@@ -39,6 +39,7 @@ BuildRequires:	cppunit-devel >= 1.9.14
 BuildRequires:	doxygen >= 1.5
 BuildRequires:	fftw3-devel >= 3.0
 BuildRequires:	gsl-devel >= 1.10
+BuildRequires:	ice-devel
 BuildRequires:	jack-audio-connection-kit-devel >= 0.8
 BuildRequires:	libusb-devel
 BuildRequires:	log4cpp-devel
