@@ -1,11 +1,12 @@
 # TODO:
-# - fix uhd build
+# - fix uhd build (create uhd.spec first)
+# - GUIs split/subpackages?
 %bcond_with	uhd
 #
 Summary:	Software defined radio framework
 Name:		gnuradio
 Version:	3.7.2.1
-Release:	0.1
+Release:	1
 License:	GPL v3
 Group:		Applications/Engineering
 Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
@@ -82,8 +83,6 @@ Obsoletes:	usrp < 3.3.0-1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		filterout_cpp	-pipe
-# pthread_create, pthread_join, pthread_detach - not used from within this
-%define		skip_post_check_so	libgnuradio-blocks-3.7.2.1.so.0.0.0
 
 %description
 GNU Radio is a collection of software that when combined with minimal
@@ -96,6 +95,7 @@ performance wireless devices into software problems.
 Summary:	GNU Radio development files
 Group:		Applications/Engineering
 Requires:	%{name} = %{version}-%{release}
+Requires:	boost-devel
 Obsoletes:	usrp-devel < 3.3.0-1
 
 %description devel
@@ -120,21 +120,50 @@ sed -e 's/target_link_libraries(volk ${volk_libraries})/target_link_libraries(vo
 %build
 %{__mkdir_p} build
 cd build
-%cmake ..
+%cmake \
+	-DENABLE_DOXYGEN=FORCE \
+	-DENABLE_GR_ATSC=FORCE \
+	-DENABLE_GR_AUDIO=FORCE \
+	-DENABLE_GRC=FORCE \
+	-DENABLE-GR_COMEDI=FORCE \
+	-DENABLE_GR_CORE=FORCE \
+	-DENABLE_GR_FCD=FORCE \
+	-DENABLE_GR_NOAA=FORCE \
+	-DENABLE_GR_PAGER=FORCE \
+	-DENABLE_GR_TRELLIS=FORCE \
+	-DENABLE_GRUEL=FORCE \
+	%{?with_uhd:-DENABLE_GR_UHD=FORCE} \
+	-DENABLE_GR_UTILS=FORCE \
+	-DENABLE_GR_VIDEO_SDL=FORCE \
+	-DENABLE_GR_VOCODER=FORCE \
+	-DENABLE_GR_WXGUI=FORCE \
+	-DENABLE_PYTHON=FORCE \
+	-DENABLE_VOLK=FORCE \
+	-DSYSCONFDIR=%{_sysconfdir} \
+	..
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-cd build
-%{__make} install \
+%{__make} -C build install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 rm -rf inst-doc
 install -d inst-doc
 mv $RPM_BUILD_ROOT%{_docdir}/gnuradio-*/* inst-doc
 
-find $RPM_BUILD_ROOT%{py_sitedir} -name \*.py -execdir sh -c '[ -f {}c -o -f {}o ] && %{__rm} -f {}' \;
+# filter bundled cmake files for other libraries
+cd $RPM_BUILD_ROOT%{_libdir}/cmake/gnuradio
+for f in *.cmake; do
+	case $f in
+		FindUHD.cmake|Gr*.cmake|Gnu*.cmake)
+			;;
+		*)
+			rm "$f"
+			;;
+	esac
+done
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -147,59 +176,118 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.hacking
 %doc inst-doc/*
 %attr(755,root,root) %{_bindir}/gnuradio-*
+%attr(755,root,root) %{_bindir}/gr-ctrlport-*
+%attr(755,root,root) %{_bindir}/gr-perf-*
 %attr(755,root,root) %{_bindir}/gr_*
 %attr(755,root,root) %{_bindir}/grcc
+%attr(755,root,root) %{_bindir}/usrp_flex
+%attr(755,root,root) %{_bindir}/usrp_flex_all
+%attr(755,root,root) %{_bindir}/usrp_flex_band
+%attr(755,root,root) %{_bindir}/volk_modtool
+%attr(755,root,root) %{_bindir}/volk_profile
 %attr(755,root,root) %{_libdir}/libgnuradio-*.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgnuradio-*.so.0
-%attr(755,root,root) %{_libdir}/libvolk-*.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libvolk-*.so.0
+%attr(755,root,root) %{_libdir}/libvolk.so.*.*
+#%attr(755,root,root) %ghost %{_libdir}/libvolk.so.0
 %dir %{_sysconfdir}/gnuradio
 %dir %{_sysconfdir}/gnuradio/conf.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gnuradio/conf.d/*.conf
 
-%dir %{py_sitedir}/*
-#%dir %{py_sitedir}/gruel
-#%{py_sitedir}/gruel/*.py*
-#%dir %{py_sitedir}/gruel/pmt
-#%{py_sitedir}/gruel/pmt/*.py*
-#%attr(755,root,root) %{py_sitedir}/gruel/pmt/*.so
-#%dir %{py_sitedir}/gnuradio
-#%{py_sitedir}/gnuradio/*.py*
-#%attr(755,root,root) %{py_sitedir}/gnuradio/*.so
-#%dir %{py_sitedir}/gnuradio/gr
-#%{py_sitedir}/gnuradio/gr/*.py*
-#%attr(755,root,root) %{py_sitedir}/gnuradio/gr/*.so
-#%dir %{py_sitedir}/gnuradio/digital
-#%{py_sitedir}/gnuradio/digital/*.py*
-#%attr(755,root,root) %{py_sitedir}/gnuradio/digital/*.so
-#%dir %{py_sitedir}/gnuradio/digital/utils
-#%{py_sitedir}/gnuradio/digital/utils/*.py*
-#%dir %{py_sitedir}/gnuradio/audio
-#%{py_sitedir}/gnuradio/audio/*.py*
-#%attr(755,root,root) %{py_sitedir}/gnuradio/audio/*.so
-#%dir %{py_sitedir}/gnuradio/vocoder
-#%{py_sitedir}/gnuradio/vocoder/*.py*
-#%attr(755,root,root) %{py_sitedir}/gnuradio/vocoder/*.so
-#%dir %{py_sitedir}/gnuradio/noaa
-#%{py_sitedir}/gnuradio/noaa/*.py*
-#%attr(755,root,root) %{py_sitedir}/gnuradio/noaa/*.so
-#%dir %{py_sitedir}/gnuradio/pager
-#%{py_sitedir}/gnuradio/pager/*.py*
-#%attr(755,root,root) %{py_sitedir}/gnuradio/pager/*.so
-#%dir %{py_sitedir}/gnuradio/qtgui
-#%{py_sitedir}/gnuradio/qtgui/*.py*
-#%attr(755,root,root) %{py_sitedir}/gnuradio/qtgui/*.so
+%{py_sitedir}/*.py*
+%dir %{py_sitedir}/gnuradio
+%{py_sitedir}/gnuradio/*.py*
+%dir %{py_sitedir}/gnuradio/analog
+%attr(755,root,root) %{py_sitedir}/gnuradio/analog/*.so
+%{py_sitedir}/gnuradio/analog/*.py*
 
-#%{py_sitedir}/gnuradio/blks2
-#%{py_sitedir}/gnuradio/blks2impl
-#%{py_sitedir}/gnuradio/grc
-#%{py_sitedir}/gnuradio/gru
-#%{py_sitedir}/gnuradio/gruimpl
-#%{py_sitedir}/gnuradio/wxgui
-#%{py_sitedir}/grc_gnuradio
+%dir %{py_sitedir}/gnuradio/atsc
+%attr(755,root,root) %{py_sitedir}/gnuradio/atsc/*.so
+%{py_sitedir}/gnuradio/atsc/*.py*
+
+%dir %{py_sitedir}/gnuradio/audio
+%attr(755,root,root) %{py_sitedir}/gnuradio/audio/*.so
+%{py_sitedir}/gnuradio/audio/*.py*
+
+%dir %{py_sitedir}/gnuradio/blocks
+%attr(755,root,root) %{py_sitedir}/gnuradio/blocks/*.so
+%{py_sitedir}/gnuradio/blocks/*.py*
+
+%dir %{py_sitedir}/gnuradio/channels
+%attr(755,root,root) %{py_sitedir}/gnuradio/channels/*.so
+%{py_sitedir}/gnuradio/channels/*.py*
+
+%{py_sitedir}/gnuradio/ctrlport
+
+%dir %{py_sitedir}/gnuradio/digital
+%attr(755,root,root) %{py_sitedir}/gnuradio/digital/*.so
+%{py_sitedir}/gnuradio/digital/*.py*
+%{py_sitedir}/gnuradio/digital/utils
+
+%dir %{py_sitedir}/gnuradio/fcd
+%attr(755,root,root) %{py_sitedir}/gnuradio/fcd/*.so
+%{py_sitedir}/gnuradio/fcd/*.py*
+
+%dir %{py_sitedir}/gnuradio/fec
+%attr(755,root,root) %{py_sitedir}/gnuradio/fec/*.so
+%{py_sitedir}/gnuradio/fec/*.py*
+
+%dir %{py_sitedir}/gnuradio/fft
+%attr(755,root,root) %{py_sitedir}/gnuradio/fft/*.so
+%{py_sitedir}/gnuradio/fft/*.py*
+
+%dir %{py_sitedir}/gnuradio/filter
+%attr(755,root,root) %{py_sitedir}/gnuradio/filter/*.so
+%{py_sitedir}/gnuradio/filter/*.py*
+
+%dir %{py_sitedir}/gnuradio/gr
+%attr(755,root,root) %{py_sitedir}/gnuradio/gr/*.so
+%{py_sitedir}/gnuradio/gr/*.py*
+
+%{py_sitedir}/gnuradio/grc
+%{py_sitedir}/gnuradio/gru
+%{py_sitedir}/gnuradio/modtool
+
+%dir %{py_sitedir}/gnuradio/noaa
+%attr(755,root,root) %{py_sitedir}/gnuradio/noaa/*.so
+%{py_sitedir}/gnuradio/noaa/*.py*
+
+%dir %{py_sitedir}/gnuradio/pager
+%attr(755,root,root) %{py_sitedir}/gnuradio/pager/*.so
+%{py_sitedir}/gnuradio/pager/*.py*
+
+%dir %{py_sitedir}/gnuradio/qtgui
+%attr(755,root,root) %{py_sitedir}/gnuradio/qtgui/*.so
+%{py_sitedir}/gnuradio/qtgui/*.py*
+
+%dir %{py_sitedir}/gnuradio/trellis
+%attr(755,root,root) %{py_sitedir}/gnuradio/trellis/*.so
+%{py_sitedir}/gnuradio/trellis/*.py*
+
+%dir %{py_sitedir}/gnuradio/video_sdl
+%attr(755,root,root) %{py_sitedir}/gnuradio/video_sdl/*.so
+%{py_sitedir}/gnuradio/video_sdl/*.py*
+
+%dir %{py_sitedir}/gnuradio/vocoder
+%attr(755,root,root) %{py_sitedir}/gnuradio/vocoder/*.so
+%{py_sitedir}/gnuradio/vocoder/*.py*
+
+%dir %{py_sitedir}/gnuradio/wavelet
+%attr(755,root,root) %{py_sitedir}/gnuradio/wavelet/*.so
+%{py_sitedir}/gnuradio/wavelet/*.py*
+
+%dir %{py_sitedir}/gnuradio/wxgui
+%attr(755,root,root) %{py_sitedir}/gnuradio/wxgui/*.so
+%{py_sitedir}/gnuradio/wxgui/*.py*
+%{py_sitedir}/gnuradio/wxgui/forms
+%{py_sitedir}/gnuradio/wxgui/plotter
+
+%{py_sitedir}/grc_gnuradio
+%dir %{py_sitedir}/pmt
+%attr(755,root,root) %{py_sitedir}/pmt/_pmt_swig.so
+%{py_sitedir}/pmt/*.py*
+%{py_sitedir}/volk_modtool
 
 %{_datadir}/gnuradio
-%exclude %{_datadir}/gnuradio/gr-newmod
 %exclude %{_datadir}/gnuradio/examples
 
 %files devel
@@ -212,7 +300,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_pkgconfigdir}/gnuradio-*.pc
 %{_pkgconfigdir}/gr-wxgui.pc
 %{_pkgconfigdir}/volk.pc
-%{_datadir}/gnuradio/gr-newmod
+%dir %{_libdir}/cmake/gnuradio
+%{_libdir}/cmake/gnuradio/Gnu*.cmake
+%{_libdir}/cmake/gnuradio/Gr*.cmake
+%{?with_uhd:%{_libdir}/cmake/gnuradio/FindUHD.cmake}
+%{_libdir}/cmake/volk
 
 %files examples
 %defattr(644,root,root,755)
