@@ -47,7 +47,7 @@ BuildRequires:	orc-devel >= 0.4.11
 BuildRequires:	portaudio-devel >= 19
 # R/S instead?
 BuildRequires:	python-PyOpenGL
-BuildRequires:	python-PyQt4-devel >= 4.4
+BuildRequires:	sip-PyQt4 >= 4.4
 # R/S instead?
 BuildRequires:	python-PyQwt-devel >= 5.2
 BuildRequires:	python-cheetah >= 2.0.0
