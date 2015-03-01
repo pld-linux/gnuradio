@@ -2,17 +2,16 @@
 # - fix uhd build (create uhd.spec first)
 # - GUIs split/subpackages?
 %bcond_with	uhd
-#
+
 Summary:	Software defined radio framework
 Name:		gnuradio
 Version:	3.7.2.1
-Release:	6
+Release:	7
 License:	GPL v3
 Group:		Applications/Engineering
 Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
 # Source0-md5:	f2ea23a30cb02802870fe8cb9bf272c9
 URL:		http://www.gnuradio.org/
-BuildRequires:	SDL-devel >= 1.2.0
 BuildRequires:	Qt3Support >= 4.8
 BuildRequires:	QtCLucene-devel >= 4.8
 BuildRequires:	QtCore-devel >= 4.8
@@ -32,6 +31,7 @@ BuildRequires:	QtUiTools-devel >= 4.8
 BuildRequires:	QtWebKit-devel >= 4.8
 BuildRequires:	QtXml-devel >= 4.8
 BuildRequires:	QtXmlPatterns-devel >= 4.8
+BuildRequires:	SDL-devel >= 1.2.0
 BuildRequires:	alsa-lib-devel >= 0.9
 BuildRequires:	boost-devel >= 1.35
 BuildRequires:	cmake >= 2.6
@@ -102,10 +102,24 @@ Obsoletes:	usrp-devel < 3.3.0-1
 %description devel
 GNU Radio Headers.
 
+%package doc
+Summary:	GNU Radio
+Group:		Documentation
+Requires:	%{name} = %{version}-%{release}
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description doc
+GNU Radio Documentation.
+
 %package examples
 Summary:	GNU Radio examples
-Group:		Applications/Engineering
+Group:		Documentation
 Requires:	%{name} = %{version}-%{release}
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
 
 %description examples
 GNU Radio examples.
