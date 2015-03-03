@@ -38,12 +38,14 @@ BuildRequires:	cmake >= 2.6
 BuildRequires:	cppunit-devel >= 1.9.14
 BuildRequires:	doxygen >= 1.5
 BuildRequires:	fftw3-devel >= 3.0
+BuildRequires:	fftw3-single-devel >= 3.0
 BuildRequires:	gsl-devel >= 1.10
 BuildRequires:	ice-devel
 BuildRequires:	jack-audio-connection-kit-devel >= 0.8
 BuildRequires:	libusb-devel
 BuildRequires:	log4cpp-devel
 BuildRequires:	orc-devel >= 0.4.11
+BuildRequires:	pkgconfig
 BuildRequires:	portaudio-devel >= 19
 # R/S instead?
 BuildRequires:	python-PyOpenGL
@@ -61,7 +63,7 @@ BuildRequires:	python-pygtk-devel >= 2.10.0
 BuildRequires:	python-wxPython-devel >= 2.8
 BuildRequires:	qt4-qmake >= 4.2.0
 BuildRequires:	qwt-devel >= 5.2
-BuildRequires:	sphinx
+BuildRequires:	sphinx-pdg
 BuildRequires:	swig-python >= 1.3.31
 BuildRequires:	texlive-latex
 %{?with_uhd:BuildRequires:	uhd-devel >= 3.0.0}
