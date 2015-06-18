@@ -5,12 +5,12 @@
 
 Summary:	Software defined radio framework
 Name:		gnuradio
-Version:	3.7.2.1
-Release:	7
+Version:	3.7.7.1
+Release:	1
 License:	GPL v3
 Group:		Applications/Engineering
 Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
-# Source0-md5:	f2ea23a30cb02802870fe8cb9bf272c9
+# Source0-md5:	ca8e47abcb01edc72014ccabe38123a3
 URL:		http://www.gnuradio.org/
 BuildRequires:	Qt3Support >= 4.8
 BuildRequires:	QtCLucene-devel >= 4.8
@@ -134,10 +134,13 @@ sed -e 's/list(APPEND gr_audio_libs ${JACK_LIBRARIES})/list(APPEND gr_audio_libs
 sed -e 's/list(APPEND fcd_libs rt)/list(APPEND fcd_libs rt pthread)/' -i gr-fcd/lib/CMakeLists.txt
 sed -e 's/target_link_libraries(volk ${volk_libraries})/target_link_libraries(volk ${volk_libraries} m)/' -i volk/lib/CMakeLists.txt
 
+sed -i -e 's#libexec#%{_lib}#g' CMakeLists.txt
+
 %build
 %{__mkdir_p} build
 cd build
 %cmake \
+	-DCMAKE_BUILD_TYPE=None \
 	-DENABLE_DOXYGEN=FORCE \
 	-DENABLE_GR_ATSC=FORCE \
 	-DENABLE_GR_AUDIO=FORCE \
@@ -193,24 +196,21 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.hacking
 %doc inst-doc/*
 %attr(755,root,root) %{_bindir}/gnuradio-*
-%attr(755,root,root) %{_bindir}/gr-ctrlport-*
-%attr(755,root,root) %{_bindir}/gr-perf-*
 %attr(755,root,root) %{_bindir}/gr_*
 %attr(755,root,root) %{_bindir}/grcc
 %attr(755,root,root) %{_bindir}/usrp_flex
 %attr(755,root,root) %{_bindir}/usrp_flex_all
 %attr(755,root,root) %{_bindir}/usrp_flex_band
+%attr(755,root,root) %{_bindir}/volk-config-info
 %attr(755,root,root) %{_bindir}/volk_modtool
 %attr(755,root,root) %{_bindir}/volk_profile
 %attr(755,root,root) %{_libdir}/libgnuradio-*.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgnuradio-*.so.0
 %attr(755,root,root) %{_libdir}/libvolk.so.*.*
-#%attr(755,root,root) %ghost %{_libdir}/libvolk.so.0
 %dir %{_sysconfdir}/gnuradio
 %dir %{_sysconfdir}/gnuradio/conf.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gnuradio/conf.d/*.conf
 
-%{py_sitedir}/*.py*
 %dir %{py_sitedir}/gnuradio
 %{py_sitedir}/gnuradio/*.py*
 %dir %{py_sitedir}/gnuradio/analog
@@ -239,6 +239,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{py_sitedir}/gnuradio/digital/*.so
 %{py_sitedir}/gnuradio/digital/*.py*
 %{py_sitedir}/gnuradio/digital/utils
+
+%dir %{py_sitedir}/gnuradio/dtv
+%{py_sitedir}/gnuradio/dtv/*.py*
+%attr(755,root,root) %{py_sitedir}/gnuradio/dtv/_dtv_swig.so
 
 %dir %{py_sitedir}/gnuradio/fcd
 %attr(755,root,root) %{py_sitedir}/gnuradio/fcd/*.so
@@ -306,6 +310,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_datadir}/gnuradio
 %exclude %{_datadir}/gnuradio/examples
+
+%dir %{_libdir}/gnuradio
+%attr(755,root,root) %{_libdir}/gnuradio/grc_setup_freedesktop
 
 %files devel
 %defattr(644,root,root,755)
