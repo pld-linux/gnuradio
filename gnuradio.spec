@@ -6,7 +6,7 @@
 Summary:	Software defined radio framework
 Name:		gnuradio
 Version:	3.7.7.1
-Release:	5
+Release:	6
 License:	GPL v3
 Group:		Applications/Engineering
 Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
@@ -197,7 +197,6 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc README.hacking
-%doc inst-doc/*
 %attr(755,root,root) %{_bindir}/gnuradio-*
 %attr(755,root,root) %{_bindir}/gr_*
 %attr(755,root,root) %{_bindir}/grcc
@@ -332,6 +331,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/cmake/gnuradio/Gr*.cmake
 %{?with_uhd:%{_libdir}/cmake/gnuradio/FindUHD.cmake}
 %{_libdir}/cmake/volk
+
+%files doc
+%defattr(644,root,root,755)
+%doc inst-doc/*
 
 %files examples
 %defattr(644,root,root,755)
