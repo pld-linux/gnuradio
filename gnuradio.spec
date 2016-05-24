@@ -5,12 +5,15 @@
 
 Summary:	Software defined radio framework
 Name:		gnuradio
-Version:	3.7.7.1
-Release:	6
+Version:	3.7.9.2
+Release:	1
 License:	GPL v3
 Group:		Applications/Engineering
 Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
-# Source0-md5:	ca8e47abcb01edc72014ccabe38123a3
+# Source0-md5:	ec5532a438ae3169069a9909499fa19b
+Patch0:		link.patch
+Patch1:		gsl.patch
+Patch2:		libexec.patch
 URL:		http://www.gnuradio.org/
 BuildRequires:	Qt3Support >= 4.8
 BuildRequires:	QtCLucene-devel >= 4.8
@@ -33,7 +36,7 @@ BuildRequires:	QtXml-devel >= 4.8
 BuildRequires:	QtXmlPatterns-devel >= 4.8
 BuildRequires:	SDL-devel >= 1.2.0
 BuildRequires:	alsa-lib-devel >= 0.9
-BuildRequires:	boost-devel >= 1.35
+BuildRequires:	boost-devel >= 1.53
 BuildRequires:	cmake >= 2.6
 BuildRequires:	cppunit-devel >= 1.9.14
 BuildRequires:	doxygen >= 1.5
@@ -69,10 +72,6 @@ BuildRequires:	texlive-latex
 %{?with_uhd:BuildRequires:	uhd-devel >= 3.0.0}
 BuildRequires:	xdg-utils
 BuildRequires:	xmlto
-BuildConflicts:	boost-devel = 1.46.0
-BuildConflicts:	boost-devel = 1.46.1
-BuildConflicts:	boost-devel = 1.47.0
-BuildConflicts:	boost-devel = 1.52.0
 Requires:	portaudio
 Requires:	python-PyQt4
 Requires:	python-cheetah
@@ -128,18 +127,14 @@ GNU Radio examples.
 
 %prep
 %setup -q
-sed -e '/Prevented in-tree build. This is bad practice./d' -i CMakeLists.txt
-sed -e 's/list(APPEND gnuradio_runtime_libs rt)/list(APPEND gnuradio_runtime_libs rt pthread)/' -i gnuradio-runtime/lib/CMakeLists.txt
-sed -e 's/list(APPEND gr_audio_libs ${JACK_LIBRARIES})/list(APPEND gr_audio_libs ${JACK_LIBRARIES} pthread)/' -i gr-audio/lib/CMakeLists.txt
-sed -e 's/list(APPEND fcd_libs rt)/list(APPEND fcd_libs rt pthread)/' -i gr-fcd/lib/CMakeLists.txt
-sed -e 's/target_link_libraries(volk ${volk_libraries})/target_link_libraries(volk ${volk_libraries} m)/' -i volk/lib/CMakeLists.txt
-
-sed -i -e 's#libexec#%{_lib}#g' CMakeLists.txt
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 %{__mkdir_p} build
 cd build
-%cmake \
+%cmake -Wno-dev \
 	-DCMAKE_BUILD_TYPE=None \
 	-DENABLE_DOXYGEN=FORCE \
 	-DENABLE_GR_ATSC=FORCE \
@@ -198,8 +193,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc README.hacking
 %attr(755,root,root) %{_bindir}/gnuradio-*
+%attr(755,root,root) %{_bindir}/gr-*
 %attr(755,root,root) %{_bindir}/gr_*
 %attr(755,root,root) %{_bindir}/grcc
+%attr(755,root,root) %{_bindir}/polar_channel_construction
 %attr(755,root,root) %{_bindir}/usrp_flex
 %attr(755,root,root) %{_bindir}/usrp_flex_all
 %attr(755,root,root) %{_bindir}/usrp_flex_band
@@ -253,6 +250,10 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{py_sitedir}/gnuradio/fec
 %attr(755,root,root) %{py_sitedir}/gnuradio/fec/*.so
 %{py_sitedir}/gnuradio/fec/*.py*
+%dir %{py_sitedir}/gnuradio/fec/LDPC
+%{py_sitedir}/gnuradio/fec/LDPC/*.py*
+%dir %{py_sitedir}/gnuradio/fec/polar
+%{py_sitedir}/gnuradio/fec/polar/*.py*
 
 %dir %{py_sitedir}/gnuradio/fft
 %attr(755,root,root) %{py_sitedir}/gnuradio/fft/*.so

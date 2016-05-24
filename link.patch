@@ -1,0 +1,57 @@
+diff -ur gnuradio-3.7.9.2.orig/gnuradio-runtime/lib/CMakeLists.txt gnuradio-3.7.9.2/gnuradio-runtime/lib/CMakeLists.txt
+--- gnuradio-3.7.9.2.orig/gnuradio-runtime/lib/CMakeLists.txt	2015-08-28 14:47:45.000000000 +0000
++++ gnuradio-3.7.9.2/gnuradio-runtime/lib/CMakeLists.txt	2016-05-23 05:30:48.922358208 +0000
+@@ -154,7 +154,7 @@
+ 
+ #need to link with librt on ubuntu 11.10 for shm_*
+ if(LINUX)
+-    list(APPEND gnuradio_runtime_libs rt)
++    list(APPEND gnuradio_runtime_libs rt pthread)
+ endif()
+ 
+ ########################################################################
+diff -ur gnuradio-3.7.9.2.orig/gr-audio/lib/CMakeLists.txt gnuradio-3.7.9.2/gr-audio/lib/CMakeLists.txt
+--- gnuradio-3.7.9.2.orig/gr-audio/lib/CMakeLists.txt	2015-04-13 14:32:43.000000000 +0000
++++ gnuradio-3.7.9.2/gr-audio/lib/CMakeLists.txt	2016-05-23 05:30:48.922358208 +0000
+@@ -96,7 +96,7 @@
+ 
+     include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/jack)
+     include_directories(${JACK_INCLUDE_DIRS})
+-    list(APPEND gr_audio_libs ${JACK_LIBRARIES})
++    list(APPEND gr_audio_libs ${JACK_LIBRARIES} pthread)
+     add_definitions(${JACK_DEFINITIONS})
+     list(APPEND gr_audio_sources
+         ${CMAKE_CURRENT_SOURCE_DIR}/jack/jack_impl.cc
+diff -ur gnuradio-3.7.9.2.orig/gr-fcd/lib/CMakeLists.txt gnuradio-3.7.9.2/gr-fcd/lib/CMakeLists.txt
+--- gnuradio-3.7.9.2.orig/gr-fcd/lib/CMakeLists.txt	2015-04-13 14:32:43.000000000 +0000
++++ gnuradio-3.7.9.2/gr-fcd/lib/CMakeLists.txt	2016-05-23 05:30:48.925691583 +0000
+@@ -88,7 +88,7 @@
+ 
+ add_library(gnuradio-fcd SHARED ${gr_fcd_sources})
+ if (LINUX)
+-  list(APPEND fcd_libs rt)
++  list(APPEND fcd_libs rt pthread)
+ endif()
+ target_link_libraries(gnuradio-fcd ${fcd_libs} ${LOG4CPP_LIBRARIES})
+ 
+diff -ur gnuradio-3.7.9.2.orig/volk/lib/CMakeLists.txt gnuradio-3.7.9.2/volk/lib/CMakeLists.txt
+--- gnuradio-3.7.9.2.orig/volk/lib/CMakeLists.txt	2016-03-31 05:23:12.000000000 +0000
++++ gnuradio-3.7.9.2/volk/lib/CMakeLists.txt	2016-05-23 05:30:48.925691583 +0000
+@@ -534,7 +534,7 @@
+ 
+     #Add dynamic library
+     add_library(volk SHARED $<TARGET_OBJECTS:volk_obj>)
+-    target_link_libraries(volk ${volk_libraries})
++    target_link_libraries(volk ${volk_libraries} m)
+ 
+     #Configure target properties
+     set_target_properties(volk_obj PROPERTIES COMPILE_FLAGS "-fPIC")
+@@ -563,7 +563,7 @@
+ else()
+     #create the volk runtime library
+     add_library(volk SHARED ${volk_sources})
+-    target_link_libraries(volk ${volk_libraries})
++    target_link_libraries(volk ${volk_libraries} m)
+     set_target_properties(volk PROPERTIES SOVERSION ${LIBVER})
+     set_target_properties(volk PROPERTIES DEFINE_SYMBOL "volk_EXPORTS")
+ 
