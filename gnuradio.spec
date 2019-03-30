@@ -6,7 +6,7 @@
 Summary:	Software defined radio framework
 Name:		gnuradio
 Version:	3.7.13.4
-Release:	1
+Release:	2
 License:	GPL v3
 Group:		Applications/Engineering
 Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
@@ -184,7 +184,7 @@ for f in *.cmake; do
 done
 
 # remove binary from noarch examples
-%{__rm} $RPM_BUILD_ROOT%{_datadir}/gnuradio/examples/{audio/dial_tone,fcd/fcd_nfm_rx}
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/gnuradio/examples/{audio/dial_tone,fcd/fcd_nfm_rx,qt-gui/display_qt}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
