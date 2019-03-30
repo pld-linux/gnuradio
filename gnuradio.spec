@@ -73,6 +73,7 @@ BuildRequires:	texlive-latex
 %{?with_uhd:BuildRequires:	uhd-devel >= 3.0.0}
 BuildRequires:	xdg-utils
 BuildRequires:	xmlto
+BuildConflicts:	python-thrift
 Requires:	portaudio
 Requires:	python-PyQt4
 Requires:	python-cheetah
