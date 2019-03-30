@@ -5,15 +5,16 @@
 
 Summary:	Software defined radio framework
 Name:		gnuradio
-Version:	3.7.9.2
-Release:	3
+Version:	3.7.13.4
+Release:	1
 License:	GPL v3
 Group:		Applications/Engineering
 Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
-# Source0-md5:	ec5532a438ae3169069a9909499fa19b
+# Source0-md5:	b38d9cfa7cb4dcb97f5d19ebcabe8dcb
 Patch0:		link.patch
 Patch1:		gsl.patch
 Patch2:		libexec.patch
+Patch3:		qwt-includes.patch
 URL:		http://www.gnuradio.org/
 BuildRequires:	Qt3Support >= 4.8
 BuildRequires:	QtCLucene-devel >= 4.8
@@ -130,6 +131,7 @@ GNU Radio examples.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %{__mkdir_p} build
@@ -304,6 +306,10 @@ rm -rf $RPM_BUILD_ROOT
 %{py_sitedir}/gnuradio/wxgui/*.py*
 %{py_sitedir}/gnuradio/wxgui/forms
 %{py_sitedir}/gnuradio/wxgui/plotter
+
+%dir %{py_sitedir}/gnuradio/zeromq
+%attr(755,root,root) %{py_sitedir}/gnuradio/zeromq/*.so
+%{py_sitedir}/gnuradio/zeromq/*.py*
 
 %{py_sitedir}/grc_gnuradio
 %dir %{py_sitedir}/pmt

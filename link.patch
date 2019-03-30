@@ -4,7 +4,7 @@ diff -ur gnuradio-3.7.9.2.orig/gnuradio-runtime/lib/CMakeLists.txt gnuradio-3.7.
 @@ -154,7 +154,7 @@
  
  #need to link with librt on ubuntu 11.10 for shm_*
- if(LINUX)
+ if((LINUX) OR (CMAKE_SYSTEM_NAME STREQUAL "kFreeBSD"))
 -    list(APPEND gnuradio_runtime_libs rt)
 +    list(APPEND gnuradio_runtime_libs rt pthread)
  endif()
@@ -43,15 +43,15 @@ diff -ur gnuradio-3.7.9.2.orig/volk/lib/CMakeLists.txt gnuradio-3.7.9.2/volk/lib
      add_library(volk SHARED $<TARGET_OBJECTS:volk_obj>)
 -    target_link_libraries(volk ${volk_libraries})
 +    target_link_libraries(volk ${volk_libraries} m)
- 
-     #Configure target properties
-     set_target_properties(volk_obj PROPERTIES COMPILE_FLAGS "-fPIC")
+     target_include_directories(volk
+         PUBLIC ${PROJECT_BINARY_DIR}/include
+         PUBLIC ${PROJECT_SOURCE_DIR}/include
 @@ -563,7 +563,7 @@
  else()
      #create the volk runtime library
      add_library(volk SHARED ${volk_sources})
 -    target_link_libraries(volk ${volk_libraries})
 +    target_link_libraries(volk ${volk_libraries} m)
-     set_target_properties(volk PROPERTIES SOVERSION ${LIBVER})
-     set_target_properties(volk PROPERTIES DEFINE_SYMBOL "volk_EXPORTS")
- 
+     include_directories(volk
+         PUBLIC ${PROJECT_BINARY_DIR}/include
+         PUBLIC ${PROJECT_SOURCE_DIR}/include
