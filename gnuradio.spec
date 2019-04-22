@@ -6,7 +6,7 @@
 Summary:	Software defined radio framework
 Name:		gnuradio
 Version:	3.7.13.4
-Release:	2
+Release:	3
 License:	GPL v3
 Group:		Applications/Engineering
 Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
@@ -15,6 +15,7 @@ Patch0:		link.patch
 Patch1:		gsl.patch
 Patch2:		libexec.patch
 Patch3:		qwt-includes.patch
+Patch4:		boost-1.70.patch
 URL:		http://www.gnuradio.org/
 BuildRequires:	Qt3Support >= 4.8
 BuildRequires:	QtCLucene-devel >= 4.8
@@ -133,6 +134,7 @@ GNU Radio examples.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 %{__mkdir_p} build
