@@ -41,6 +41,7 @@ BuildRequires:	alsa-lib-devel >= 0.9
 BuildRequires:	boost-devel >= 1.53
 BuildRequires:	cmake >= 2.6
 BuildRequires:	cppunit-devel >= 1.9.14
+BuildRequires:	cppzmq-devel
 BuildRequires:	doxygen >= 1.5
 BuildRequires:	fftw3-devel >= 3.0
 BuildRequires:	fftw3-single-devel >= 3.0
@@ -66,6 +67,7 @@ BuildRequires:	python-numpy >= 1.1.0
 BuildRequires:	python-pygtk-devel >= 2.10.0
 # R/S instead?
 BuildRequires:	python-wxPython-devel >= 2.8
+BuildRequires:	qt4-build >= 4.2.0
 BuildRequires:	qt4-qmake >= 4.2.0
 BuildRequires:	qwt-devel >= 5.2
 BuildRequires:	sphinx-pdg
