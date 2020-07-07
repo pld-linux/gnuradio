@@ -5,37 +5,32 @@
 
 Summary:	Software defined radio framework
 Name:		gnuradio
-Version:	3.7.13.4
-Release:	5
+Version:	3.8.0.0
+Release:	1
 License:	GPL v3
 Group:		Applications/Engineering
 Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
-# Source0-md5:	b38d9cfa7cb4dcb97f5d19ebcabe8dcb
+# Source0-md5:	85e1ed4b18c46227731d83f8c3fbe45a
 Patch0:		link.patch
-Patch1:		gsl.patch
-Patch2:		libexec.patch
-Patch3:		qwt-includes.patch
-Patch4:		boost-1.70.patch
+Patch1:		python-libdir.patch
 URL:		http://www.gnuradio.org/
-BuildRequires:	Qt3Support >= 4.8
-BuildRequires:	QtCLucene-devel >= 4.8
-BuildRequires:	QtCore-devel >= 4.8
-BuildRequires:	QtDBus-devel >= 4.8
-BuildRequires:	QtDeclarative-devel >= 4.8
-BuildRequires:	QtDesigner-devel >= 4.8
-BuildRequires:	QtGui-devel >= 4.8
-BuildRequires:	QtHelp-devel >= 4.8
-BuildRequires:	QtNetwork-devel >= 4.8
-BuildRequires:	QtOpenGL-devel >= 4.8
-BuildRequires:	QtScript-devel >= 4.8
-BuildRequires:	QtScriptTools-devel >= 4.8
-BuildRequires:	QtSql-devel >= 4.8
-BuildRequires:	QtSvg-devel >= 4.8
-BuildRequires:	QtTest-devel >= 4.8
-BuildRequires:	QtUiTools-devel >= 4.8
-BuildRequires:	QtWebKit-devel >= 4.8
-BuildRequires:	QtXml-devel >= 4.8
-BuildRequires:	QtXmlPatterns-devel >= 4.8
+BuildRequires:	Qt5Core-devel
+BuildRequires:	Qt5DBus-devel
+BuildRequires:	Qt5Declarative-devel
+BuildRequires:	Qt5Designer-devel
+BuildRequires:	Qt5Gui-devel
+BuildRequires:	Qt5Help-devel
+BuildRequires:	Qt5Network-devel
+BuildRequires:	Qt5OpenGL-devel
+BuildRequires:	Qt5Script-devel
+BuildRequires:	Qt5ScriptTools-devel
+BuildRequires:	Qt5Sql-devel
+BuildRequires:	Qt5Svg-devel
+BuildRequires:	Qt5Test-devel
+BuildRequires:	Qt5UiTools-devel
+BuildRequires:	Qt5WebKit-devel
+BuildRequires:	Qt5Xml-devel
+BuildRequires:	Qt5XmlPatterns-devel
 BuildRequires:	SDL-devel >= 1.2.0
 BuildRequires:	alsa-lib-devel >= 0.9
 BuildRequires:	boost-devel >= 1.53
@@ -54,22 +49,18 @@ BuildRequires:	orc-devel >= 0.4.11
 BuildRequires:	pkgconfig
 BuildRequires:	portaudio-devel >= 19
 # R/S instead?
-BuildRequires:	python-PyOpenGL
-BuildRequires:	sip-PyQt4 >= 4.4
+BuildRequires:	python3-PyOpenGL
+BuildRequires:	sip-PyQt5
 # R/S instead?
-BuildRequires:	python-PyQwt-devel >= 5.2
-BuildRequires:	python-cheetah >= 2.0.0
-BuildRequires:	python-devel >= 2.5
-BuildRequires:	python-devel-tools
-BuildRequires:	python-ice
-BuildRequires:	python-lxml >= 1.3.6
-BuildRequires:	python-numpy >= 1.1.0
-BuildRequires:	python-pygtk-devel >= 2.10.0
-# R/S instead?
-BuildRequires:	python-wxPython-devel >= 2.8
-BuildRequires:	qt4-build >= 4.2.0
-BuildRequires:	qt4-qmake >= 4.2.0
-BuildRequires:	qwt-devel >= 5.2
+BuildRequires:	python3-PyYAML
+BuildRequires:	python3-click
+BuildRequires:	python3-devel >= 2.5
+BuildRequires:	python3-devel-tools
+BuildRequires:	python3-lxml >= 1.3.6
+BuildRequires:	python3-numpy >= 1.1.0
+BuildRequires:	qt5-build
+BuildRequires:	qt5-qmake
+BuildRequires:	qwt5-devel
 BuildRequires:	sphinx-pdg
 BuildRequires:	swig-python >= 1.3.31
 BuildRequires:	texlive-latex
@@ -78,13 +69,12 @@ BuildRequires:	xdg-utils
 BuildRequires:	xmlto
 BuildConflicts:	python-thrift
 Requires:	portaudio
-Requires:	python-PyQt4
-Requires:	python-cheetah
-Requires:	python-lxml
-Requires:	python-numpy
-Requires:	python-pygtk-gtk
-Requires:	python-scipy
-Requires:	python-wxPython
+Requires:	python3-PyQt5
+Requires:	python3-PyYAML
+Requires:	python3-click
+Requires:	python3-lxml
+Requires:	python3-numpy
+Requires:	python3-scipy
 Obsoletes:	grc < 0.80-1
 Obsoletes:	usrp < 3.3.0-1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -134,9 +124,6 @@ GNU Radio examples.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
 
 %build
 %{__mkdir_p} build
@@ -188,7 +175,7 @@ for f in *.cmake; do
 done
 
 # remove binary from noarch examples
-%{__rm} $RPM_BUILD_ROOT%{_datadir}/gnuradio/examples/{audio/dial_tone,fcd/fcd_nfm_rx,qt-gui/display_qt}
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/gnuradio/examples/audio/dial_tone
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -204,129 +191,106 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/gr_*
 %attr(755,root,root) %{_bindir}/grcc
 %attr(755,root,root) %{_bindir}/polar_channel_construction
-%attr(755,root,root) %{_bindir}/usrp_flex
-%attr(755,root,root) %{_bindir}/usrp_flex_all
-%attr(755,root,root) %{_bindir}/usrp_flex_band
 %attr(755,root,root) %{_bindir}/volk-config-info
 %attr(755,root,root) %{_bindir}/volk_modtool
 %attr(755,root,root) %{_bindir}/volk_profile
-%attr(755,root,root) %{_libdir}/libgnuradio-*.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgnuradio-*.so.0
+%attr(755,root,root) %{_libdir}/libgnuradio-*.so.*.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgnuradio-*.so.3.8.0
 %attr(755,root,root) %{_libdir}/libvolk.so.*.*
 %dir %{_sysconfdir}/gnuradio
 %dir %{_sysconfdir}/gnuradio/conf.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gnuradio/conf.d/*.conf
 
-%dir %{py_sitedir}/gnuradio
-%{py_sitedir}/gnuradio/*.py*
-%dir %{py_sitedir}/gnuradio/analog
-%attr(755,root,root) %{py_sitedir}/gnuradio/analog/*.so
-%{py_sitedir}/gnuradio/analog/*.py*
+%dir %{py3_sitedir}/gnuradio
+%{py3_sitedir}/gnuradio/*.py*
+%dir %{py3_sitedir}/gnuradio/analog
+%attr(755,root,root) %{py3_sitedir}/gnuradio/analog/*.so
+%{py3_sitedir}/gnuradio/analog/*.py*
 
-%dir %{py_sitedir}/gnuradio/atsc
-%attr(755,root,root) %{py_sitedir}/gnuradio/atsc/*.so
-%{py_sitedir}/gnuradio/atsc/*.py*
+%dir %{py3_sitedir}/gnuradio/audio
+%attr(755,root,root) %{py3_sitedir}/gnuradio/audio/*.so
+%{py3_sitedir}/gnuradio/audio/*.py*
 
-%dir %{py_sitedir}/gnuradio/audio
-%attr(755,root,root) %{py_sitedir}/gnuradio/audio/*.so
-%{py_sitedir}/gnuradio/audio/*.py*
+%dir %{py3_sitedir}/gnuradio/blocks
+%attr(755,root,root) %{py3_sitedir}/gnuradio/blocks/*.so
+%{py3_sitedir}/gnuradio/blocks/*.py*
 
-%dir %{py_sitedir}/gnuradio/blocks
-%attr(755,root,root) %{py_sitedir}/gnuradio/blocks/*.so
-%{py_sitedir}/gnuradio/blocks/*.py*
+%dir %{py3_sitedir}/gnuradio/channels
+%attr(755,root,root) %{py3_sitedir}/gnuradio/channels/*.so
+%{py3_sitedir}/gnuradio/channels/*.py*
 
-%dir %{py_sitedir}/gnuradio/channels
-%attr(755,root,root) %{py_sitedir}/gnuradio/channels/*.so
-%{py_sitedir}/gnuradio/channels/*.py*
+%{py3_sitedir}/gnuradio/ctrlport
 
-%{py_sitedir}/gnuradio/ctrlport
+%dir %{py3_sitedir}/gnuradio/digital
+%attr(755,root,root) %{py3_sitedir}/gnuradio/digital/*.so
+%{py3_sitedir}/gnuradio/digital/*.py*
+%{py3_sitedir}/gnuradio/digital/utils
 
-%dir %{py_sitedir}/gnuradio/digital
-%attr(755,root,root) %{py_sitedir}/gnuradio/digital/*.so
-%{py_sitedir}/gnuradio/digital/*.py*
-%{py_sitedir}/gnuradio/digital/utils
+%dir %{py3_sitedir}/gnuradio/dtv
+%{py3_sitedir}/gnuradio/dtv/*.py*
+%attr(755,root,root) %{py3_sitedir}/gnuradio/dtv/_dtv_swig.so
 
-%dir %{py_sitedir}/gnuradio/dtv
-%{py_sitedir}/gnuradio/dtv/*.py*
-%attr(755,root,root) %{py_sitedir}/gnuradio/dtv/_dtv_swig.so
+%dir %{py3_sitedir}/gnuradio/fec
+%attr(755,root,root) %{py3_sitedir}/gnuradio/fec/*.so
+%{py3_sitedir}/gnuradio/fec/*.py*
+%dir %{py3_sitedir}/gnuradio/fec/LDPC
+%{py3_sitedir}/gnuradio/fec/LDPC/*.py*
+%dir %{py3_sitedir}/gnuradio/fec/polar
+%{py3_sitedir}/gnuradio/fec/polar/*.py*
 
-%dir %{py_sitedir}/gnuradio/fcd
-%attr(755,root,root) %{py_sitedir}/gnuradio/fcd/*.so
-%{py_sitedir}/gnuradio/fcd/*.py*
+%dir %{py3_sitedir}/gnuradio/fft
+%attr(755,root,root) %{py3_sitedir}/gnuradio/fft/*.so
+%{py3_sitedir}/gnuradio/fft/*.py*
 
-%dir %{py_sitedir}/gnuradio/fec
-%attr(755,root,root) %{py_sitedir}/gnuradio/fec/*.so
-%{py_sitedir}/gnuradio/fec/*.py*
-%dir %{py_sitedir}/gnuradio/fec/LDPC
-%{py_sitedir}/gnuradio/fec/LDPC/*.py*
-%dir %{py_sitedir}/gnuradio/fec/polar
-%{py_sitedir}/gnuradio/fec/polar/*.py*
+%dir %{py3_sitedir}/gnuradio/filter
+%attr(755,root,root) %{py3_sitedir}/gnuradio/filter/*.so
+%{py3_sitedir}/gnuradio/filter/*.py*
 
-%dir %{py_sitedir}/gnuradio/fft
-%attr(755,root,root) %{py_sitedir}/gnuradio/fft/*.so
-%{py_sitedir}/gnuradio/fft/*.py*
+%dir %{py3_sitedir}/gnuradio/gr
+%attr(755,root,root) %{py3_sitedir}/gnuradio/gr/*.so
+%{py3_sitedir}/gnuradio/gr/*.py*
 
-%dir %{py_sitedir}/gnuradio/filter
-%attr(755,root,root) %{py_sitedir}/gnuradio/filter/*.so
-%{py_sitedir}/gnuradio/filter/*.py*
+%{py3_sitedir}/gnuradio/grc
+%{py3_sitedir}/gnuradio/gru
 
-%dir %{py_sitedir}/gnuradio/gr
-%attr(755,root,root) %{py_sitedir}/gnuradio/gr/*.so
-%{py_sitedir}/gnuradio/gr/*.py*
+%dir %{py3_sitedir}/gnuradio/qtgui
+%attr(755,root,root) %{py3_sitedir}/gnuradio/qtgui/*.so
+%{py3_sitedir}/gnuradio/qtgui/*.py*
 
-%{py_sitedir}/gnuradio/grc
-%{py_sitedir}/gnuradio/gru
-%{py_sitedir}/gnuradio/modtool
+%dir %{py3_sitedir}/gnuradio/trellis
+%attr(755,root,root) %{py3_sitedir}/gnuradio/trellis/*.so
+%{py3_sitedir}/gnuradio/trellis/*.py*
 
-%dir %{py_sitedir}/gnuradio/noaa
-%attr(755,root,root) %{py_sitedir}/gnuradio/noaa/*.so
-%{py_sitedir}/gnuradio/noaa/*.py*
+%dir %{py3_sitedir}/gnuradio/video_sdl
+%attr(755,root,root) %{py3_sitedir}/gnuradio/video_sdl/*.so
+%{py3_sitedir}/gnuradio/video_sdl/*.py*
 
-%dir %{py_sitedir}/gnuradio/pager
-%attr(755,root,root) %{py_sitedir}/gnuradio/pager/*.so
-%{py_sitedir}/gnuradio/pager/*.py*
+%dir %{py3_sitedir}/gnuradio/vocoder
+%attr(755,root,root) %{py3_sitedir}/gnuradio/vocoder/*.so
+%{py3_sitedir}/gnuradio/vocoder/*.py*
 
-%dir %{py_sitedir}/gnuradio/qtgui
-%attr(755,root,root) %{py_sitedir}/gnuradio/qtgui/*.so
-%{py_sitedir}/gnuradio/qtgui/*.py*
+%dir %{py3_sitedir}/gnuradio/wavelet
+%attr(755,root,root) %{py3_sitedir}/gnuradio/wavelet/*.so
+%{py3_sitedir}/gnuradio/wavelet/*.py*
 
-%dir %{py_sitedir}/gnuradio/trellis
-%attr(755,root,root) %{py_sitedir}/gnuradio/trellis/*.so
-%{py_sitedir}/gnuradio/trellis/*.py*
+%dir %{py3_sitedir}/gnuradio/zeromq
+%attr(755,root,root) %{py3_sitedir}/gnuradio/zeromq/*.so
+%{py3_sitedir}/gnuradio/zeromq/*.py*
 
-%dir %{py_sitedir}/gnuradio/video_sdl
-%attr(755,root,root) %{py_sitedir}/gnuradio/video_sdl/*.so
-%{py_sitedir}/gnuradio/video_sdl/*.py*
-
-%dir %{py_sitedir}/gnuradio/vocoder
-%attr(755,root,root) %{py_sitedir}/gnuradio/vocoder/*.so
-%{py_sitedir}/gnuradio/vocoder/*.py*
-
-%dir %{py_sitedir}/gnuradio/wavelet
-%attr(755,root,root) %{py_sitedir}/gnuradio/wavelet/*.so
-%{py_sitedir}/gnuradio/wavelet/*.py*
-
-%dir %{py_sitedir}/gnuradio/wxgui
-%attr(755,root,root) %{py_sitedir}/gnuradio/wxgui/*.so
-%{py_sitedir}/gnuradio/wxgui/*.py*
-%{py_sitedir}/gnuradio/wxgui/forms
-%{py_sitedir}/gnuradio/wxgui/plotter
-
-%dir %{py_sitedir}/gnuradio/zeromq
-%attr(755,root,root) %{py_sitedir}/gnuradio/zeromq/*.so
-%{py_sitedir}/gnuradio/zeromq/*.py*
-
-%{py_sitedir}/grc_gnuradio
-%dir %{py_sitedir}/pmt
-%attr(755,root,root) %{py_sitedir}/pmt/_pmt_swig.so
-%{py_sitedir}/pmt/*.py*
-%{py_sitedir}/volk_modtool
+%dir %{py3_sitedir}/pmt
+%attr(755,root,root) %{py3_sitedir}/pmt/_pmt_swig.so
+%{py3_sitedir}/pmt/*.py*
+%{py3_sitedir}/volk_modtool
 
 %{_datadir}/gnuradio
 %exclude %{_datadir}/gnuradio/examples
 
-%dir %{_libdir}/gnuradio
-%attr(755,root,root) %{_libdir}/gnuradio/grc_setup_freedesktop
+%dir %{_libexecdir}/gnuradio
+%attr(755,root,root) %{_libexecdir}/gnuradio/grc_setup_freedesktop
+
+%{_desktopdir}/gnuradio-grc.desktop
+%{_iconsdir}/hicolor/*x*/apps/gnuradio-grc.png
+%{_datadir}/mime/packages/gnuradio-grc.xml
 
 %files devel
 %defattr(644,root,root,755)
@@ -336,7 +300,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libgnuradio-*.so
 %attr(755,root,root) %{_libdir}/libvolk.so
 %{_pkgconfigdir}/gnuradio-*.pc
-%{_pkgconfigdir}/gr-wxgui.pc
 %{_pkgconfigdir}/volk.pc
 %dir %{_libdir}/cmake/gnuradio
 %{_libdir}/cmake/gnuradio/Gnu*.cmake

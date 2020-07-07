@@ -5,8 +5,8 @@ diff -ur gnuradio-3.7.9.2.orig/gnuradio-runtime/lib/CMakeLists.txt gnuradio-3.7.
  
  #need to link with librt on ubuntu 11.10 for shm_*
  if((LINUX) OR (CMAKE_SYSTEM_NAME STREQUAL "kFreeBSD"))
--    list(APPEND gnuradio_runtime_libs rt)
-+    list(APPEND gnuradio_runtime_libs rt pthread)
+-    target_link_libraries(gnuradio-runtime PUBLIC rt)
++    target_link_libraries(gnuradio-runtime PUBLIC rt pthread)
  endif()
  
  ########################################################################
@@ -15,43 +15,22 @@ diff -ur gnuradio-3.7.9.2.orig/gr-audio/lib/CMakeLists.txt gnuradio-3.7.9.2/gr-a
 +++ gnuradio-3.7.9.2/gr-audio/lib/CMakeLists.txt	2016-05-23 05:30:48.922358208 +0000
 @@ -96,7 +96,7 @@
  
-     include_directories(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/jack)
-     include_directories(${JACK_INCLUDE_DIRS})
--    list(APPEND gr_audio_libs ${JACK_LIBRARIES})
-+    list(APPEND gr_audio_libs ${JACK_LIBRARIES} pthread)
-     add_definitions(${JACK_DEFINITIONS})
-     list(APPEND gr_audio_sources
+ if(JACK_FOUND)
+     target_compile_definitions(gnuradio-audio PRIVATE -DJACK_FOUND)
+-    target_link_libraries(gnuradio-audio PUBLIC JACK::JACK)
++    target_link_libraries(gnuradio-audio PUBLIC JACK::JACK pthread)
+     target_sources(gnuradio-audio PRIVATE
          ${CMAKE_CURRENT_SOURCE_DIR}/jack/jack_impl.cc
-diff -ur gnuradio-3.7.9.2.orig/gr-fcd/lib/CMakeLists.txt gnuradio-3.7.9.2/gr-fcd/lib/CMakeLists.txt
---- gnuradio-3.7.9.2.orig/gr-fcd/lib/CMakeLists.txt	2015-04-13 14:32:43.000000000 +0000
-+++ gnuradio-3.7.9.2/gr-fcd/lib/CMakeLists.txt	2016-05-23 05:30:48.925691583 +0000
-@@ -88,7 +88,7 @@
- 
- add_library(gnuradio-fcd SHARED ${gr_fcd_sources})
- if (LINUX)
--  list(APPEND fcd_libs rt)
-+  list(APPEND fcd_libs rt pthread)
- endif()
- target_link_libraries(gnuradio-fcd ${fcd_libs} ${LOG4CPP_LIBRARIES})
- 
+         ${CMAKE_CURRENT_SOURCE_DIR}/jack/jack_source.cc
 diff -ur gnuradio-3.7.9.2.orig/volk/lib/CMakeLists.txt gnuradio-3.7.9.2/volk/lib/CMakeLists.txt
 --- gnuradio-3.7.9.2.orig/volk/lib/CMakeLists.txt	2016-03-31 05:23:12.000000000 +0000
 +++ gnuradio-3.7.9.2/volk/lib/CMakeLists.txt	2016-05-23 05:30:48.925691583 +0000
 @@ -534,7 +534,7 @@
  
-     #Add dynamic library
-     add_library(volk SHARED $<TARGET_OBJECTS:volk_obj>)
--    target_link_libraries(volk ${volk_libraries})
-+    target_link_libraries(volk ${volk_libraries} m)
-     target_include_directories(volk
-         PUBLIC ${PROJECT_BINARY_DIR}/include
-         PUBLIC ${PROJECT_SOURCE_DIR}/include
-@@ -563,7 +563,7 @@
- else()
-     #create the volk runtime library
-     add_library(volk SHARED ${volk_sources})
--    target_link_libraries(volk ${volk_libraries})
-+    target_link_libraries(volk ${volk_libraries} m)
-     include_directories(volk
-         PUBLIC ${PROJECT_BINARY_DIR}/include
-         PUBLIC ${PROJECT_SOURCE_DIR}/include
+ #Add dynamic library
+ add_library(volk SHARED $<TARGET_OBJECTS:volk_obj>)
+-target_link_libraries(volk ${volk_libraries})
++target_link_libraries(volk ${volk_libraries} m)
+ target_include_directories(volk
+   PUBLIC $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include
+   PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include
