@@ -6,7 +6,7 @@
 Summary:	Software defined radio framework
 Name:		gnuradio
 Version:	3.8.0.0
-Release:	2
+Release:	3
 License:	GPL v3
 Group:		Applications/Engineering
 Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
@@ -15,23 +15,23 @@ Patch0:		link.patch
 Patch1:		python-libdir.patch
 Patch2:		%{name}-boost.patch
 URL:		http://www.gnuradio.org/
-BuildRequires:	Qt5Core-devel
-BuildRequires:	Qt5DBus-devel
-BuildRequires:	Qt5Declarative-devel
-BuildRequires:	Qt5Designer-devel
-BuildRequires:	Qt5Gui-devel
-BuildRequires:	Qt5Help-devel
-BuildRequires:	Qt5Network-devel
-BuildRequires:	Qt5OpenGL-devel
-BuildRequires:	Qt5Script-devel
-BuildRequires:	Qt5ScriptTools-devel
-BuildRequires:	Qt5Sql-devel
-BuildRequires:	Qt5Svg-devel
-BuildRequires:	Qt5Test-devel
-BuildRequires:	Qt5UiTools-devel
-BuildRequires:	Qt5WebKit-devel
-BuildRequires:	Qt5Xml-devel
-BuildRequires:	Qt5XmlPatterns-devel
+BuildRequires:	Qt5Core-devel >= 5
+BuildRequires:	Qt5DBus-devel >= 5
+BuildRequires:	Qt5Declarative-devel >= 5
+BuildRequires:	Qt5Designer-devel >= 5
+BuildRequires:	Qt5Gui-devel >= 5
+BuildRequires:	Qt5Help-devel >= 5
+BuildRequires:	Qt5Network-devel >= 5
+BuildRequires:	Qt5OpenGL-devel >= 5
+BuildRequires:	Qt5Script-devel >= 5
+BuildRequires:	Qt5ScriptTools-devel >= 5
+BuildRequires:	Qt5Sql-devel >= 5
+BuildRequires:	Qt5Svg-devel >= 5
+BuildRequires:	Qt5Test-devel >= 5
+BuildRequires:	Qt5UiTools-devel >= 5
+BuildRequires:	Qt5WebKit-devel >= 5
+BuildRequires:	Qt5Xml-devel >= 5
+BuildRequires:	Qt5XmlPatterns-devel >= 5
 BuildRequires:	SDL-devel >= 1.2.0
 BuildRequires:	alsa-lib-devel >= 0.9
 BuildRequires:	boost-devel >= 1.53
@@ -56,6 +56,7 @@ BuildRequires:	orc-devel >= 0.4.11
 BuildRequires:	pango >= 1:1.26.0
 BuildRequires:	pkgconfig
 BuildRequires:	portaudio-devel >= 19
+BuildRequires:	python >= 1:3.6.5
 BuildRequires:	python3 >= 1:3.6.5
 BuildRequires:	python3-Mako >= 0.9.1
 # R/S instead?
@@ -68,8 +69,8 @@ BuildRequires:	python3-devel-tools
 BuildRequires:	python3-lxml >= 1.3.6
 BuildRequires:	python3-numpy >= 1.1.0
 BuildRequires:	python3-pygobject3 >= 2.28.6
-BuildRequires:	qt5-build
-BuildRequires:	qt5-qmake
+BuildRequires:	qt5-build >= 5
+BuildRequires:	qt5-qmake >= 5
 BuildRequires:	qwt5-devel
 BuildRequires:	sip-PyQt5
 BuildRequires:	sphinx-pdg
