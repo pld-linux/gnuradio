@@ -13,6 +13,7 @@ Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
 # Source0-md5:	85e1ed4b18c46227731d83f8c3fbe45a
 Patch0:		link.patch
 Patch1:		python-libdir.patch
+Patch2:		%{name}-boost.patch
 URL:		http://www.gnuradio.org/
 BuildRequires:	Qt5Core-devel
 BuildRequires:	Qt5DBus-devel
@@ -34,35 +35,45 @@ BuildRequires:	Qt5XmlPatterns-devel
 BuildRequires:	SDL-devel >= 1.2.0
 BuildRequires:	alsa-lib-devel >= 0.9
 BuildRequires:	boost-devel >= 1.53
-BuildRequires:	cmake >= 2.6
+# GI
+BuildRequires:	cairo-gobject >= 1.0
+BuildRequires:	cmake >= 3.5.1
 BuildRequires:	cppunit-devel >= 1.9.14
 BuildRequires:	cppzmq-devel
 BuildRequires:	doxygen >= 1.5
 BuildRequires:	fftw3-devel >= 3.0
 BuildRequires:	fftw3-single-devel >= 3.0
 BuildRequires:	gsl-devel >= 1.10
+# GI
+BuildRequires:	gtk+3 >= 3.10.8
 BuildRequires:	ice-devel
 BuildRequires:	jack-audio-connection-kit-devel >= 0.8
+BuildRequires:	libstdc++-devel >= 6:4.8.4
 BuildRequires:	libusb-devel
 BuildRequires:	log4cpp-devel
 BuildRequires:	orc-devel >= 0.4.11
+# PangoCairo GI
+BuildRequires:	pango >= 1:1.26.0
 BuildRequires:	pkgconfig
 BuildRequires:	portaudio-devel >= 19
+BuildRequires:	python3 >= 1:3.6.5
+BuildRequires:	python3-Mako >= 0.9.1
 # R/S instead?
 BuildRequires:	python3-PyOpenGL
-BuildRequires:	sip-PyQt5
 # R/S instead?
-BuildRequires:	python3-PyYAML
+BuildRequires:	python3-PyYAML >= 3.10
 BuildRequires:	python3-click
 BuildRequires:	python3-devel >= 2.5
 BuildRequires:	python3-devel-tools
 BuildRequires:	python3-lxml >= 1.3.6
 BuildRequires:	python3-numpy >= 1.1.0
+BuildRequires:	python3-pygobject3 >= 2.28.6
 BuildRequires:	qt5-build
 BuildRequires:	qt5-qmake
 BuildRequires:	qwt5-devel
+BuildRequires:	sip-PyQt5
 BuildRequires:	sphinx-pdg
-BuildRequires:	swig-python >= 1.3.31
+BuildRequires:	swig-python >= 3.0.8
 BuildRequires:	texlive-latex
 %{?with_uhd:BuildRequires:	uhd-devel >= 3.0.0}
 BuildRequires:	xdg-utils
@@ -70,7 +81,7 @@ BuildRequires:	xmlto
 BuildConflicts:	python-thrift
 Requires:	portaudio
 Requires:	python3-PyQt5
-Requires:	python3-PyYAML
+Requires:	python3-PyYAML >= 3.10
 Requires:	python3-click
 Requires:	python3-lxml
 Requires:	python3-numpy
@@ -102,7 +113,7 @@ GNU Radio Headers.
 Summary:	GNU Radio
 Group:		Documentation
 Requires:	%{name} = %{version}-%{release}
-%if "%{_rpmversion}" >= "5"
+%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
 %endif
 
@@ -113,7 +124,7 @@ GNU Radio Documentation.
 Summary:	GNU Radio examples
 Group:		Documentation
 Requires:	%{name} = %{version}-%{release}
-%if "%{_rpmversion}" >= "5"
+%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
 %endif
 
@@ -124,6 +135,7 @@ GNU Radio examples.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__mkdir_p} build
@@ -160,7 +172,7 @@ rm -rf $RPM_BUILD_ROOT
 
 rm -rf inst-doc
 install -d inst-doc
-mv $RPM_BUILD_ROOT%{_docdir}/gnuradio-*/* inst-doc
+%{__mv} $RPM_BUILD_ROOT%{_docdir}/gnuradio-*/* inst-doc
 
 # filter bundled cmake files for other libraries
 cd $RPM_BUILD_ROOT%{_libdir}/cmake/gnuradio
@@ -173,6 +185,9 @@ for f in *.cmake; do
 			;;
 	esac
 done
+
+# obsolete theme
+%{__rm} -r $RPM_BUILD_ROOT%{_iconsdir}/gnome
 
 # remove binary from noarch examples
 %{__rm} $RPM_BUILD_ROOT%{_datadir}/gnuradio/examples/{audio/dial_tone,qt-gui/display_qt}
@@ -301,10 +316,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libvolk.so
 %{_pkgconfigdir}/gnuradio-*.pc
 %{_pkgconfigdir}/volk.pc
-%dir %{_libdir}/cmake/gnuradio
-%{_libdir}/cmake/gnuradio/Gnu*.cmake
-%{_libdir}/cmake/gnuradio/Gr*.cmake
-%{?with_uhd:%{_libdir}/cmake/gnuradio/FindUHD.cmake}
+%{_libdir}/cmake/gnuradio
 %{_libdir}/cmake/volk
 
 %files doc
