@@ -6,7 +6,7 @@
 Summary:	Software defined radio framework
 Name:		gnuradio
 Version:	3.8.0.0
-Release:	3
+Release:	4
 License:	GPL v3
 Group:		Applications/Engineering
 Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
@@ -56,7 +56,6 @@ BuildRequires:	orc-devel >= 0.4.11
 BuildRequires:	pango >= 1:1.26.0
 BuildRequires:	pkgconfig
 BuildRequires:	portaudio-devel >= 19
-BuildRequires:	python >= 1:3.6.5
 BuildRequires:	python3 >= 1:3.6.5
 BuildRequires:	python3-Mako >= 0.9.1
 # R/S instead?
