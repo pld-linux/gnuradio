@@ -113,9 +113,7 @@ GNU Radio Headers.
 Summary:	GNU Radio
 Group:		Documentation
 Requires:	%{name} = %{version}-%{release}
-%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
-%endif
 
 %description doc
 GNU Radio Documentation.
@@ -124,9 +122,7 @@ GNU Radio Documentation.
 Summary:	GNU Radio examples
 Group:		Documentation
 Requires:	%{name} = %{version}-%{release}
-%if "%{_rpmversion}" >= "4.6"
 BuildArch:	noarch
-%endif
 
 %description examples
 GNU Radio examples.
