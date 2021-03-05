@@ -44,6 +44,7 @@ BuildRequires:	doxygen >= 1.5
 BuildRequires:	fftw3-devel >= 3.0
 BuildRequires:	fftw3-single-devel >= 3.0
 BuildRequires:	gsl-devel >= 1.10
+BuildRequires:	gmp-c++-devel
 # GI
 BuildRequires:	gtk+3 >= 3.10.8
 BuildRequires:	ice-devel
