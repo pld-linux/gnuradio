@@ -137,6 +137,9 @@ GNU Radio examples.
 %build
 %{__mkdir_p} build
 cd build
+export CFLAGS="%{rpmcflags} %{rpmcppflags}"
+export CXXFLAGS="%{rpmcxxflags} %{rpmcppflags}"
+export LDFLAGS="%{rpmldflags}"
 %cmake -Wno-dev \
 	-DCMAKE_BUILD_TYPE=None \
 	-DENABLE_DOXYGEN=FORCE \
