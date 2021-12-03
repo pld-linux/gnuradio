@@ -6,7 +6,7 @@
 Summary:	Software defined radio framework
 Name:		gnuradio
 Version:	3.8.0.0
-Release:	6
+Release:	7
 License:	GPL v3
 Group:		Applications/Engineering
 Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
