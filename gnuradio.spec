@@ -1,12 +1,15 @@
 # TODO:
 # - fix uhd build (create uhd.spec first)
 # - GUIs split/subpackages?
-%bcond_with	uhd
+#
+# Conditional build:
+%bcond_with	uhd	# UHD driver support
 
 Summary:	Software defined radio framework
+Summary(pl.UTF-8):	Szkielet radia programowego
 Name:		gnuradio
 Version:	3.8.0.0
-Release:	12
+Release:	13
 License:	GPL v3
 Group:		Applications/Engineering
 Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
@@ -72,6 +75,7 @@ BuildRequires:	python3-pygobject3 >= 2.28.6
 BuildRequires:	qt5-build >= 5
 BuildRequires:	qt5-qmake >= 5
 BuildRequires:	qwt5-devel
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	sip-PyQt5
 BuildRequires:	sphinx-pdg
 BuildRequires:	swig-python >= 3.0.8
@@ -100,33 +104,52 @@ transmitted and received are defined by software. What this means is
 that it turns the digital modulation schemes used in today's high
 performance wireless devices into software problems.
 
+%description -l pl.UTF-8
+GNU Radio to zbiór oprogramowania, który, w połączeniu z minimum
+sprzętu, pozwala na tworzenie odbiorników/nadajników radiowych, w
+których przesyłane fale są definiowane programowo. Oznacza to, że
+schematy modulacji cyfrowej, używane w obecnych wydajnych urządzeniach
+bezprzewodowych, stają się problemami programowymi.
+
 %package devel
 Summary:	GNU Radio development files
+Summary(pl.UTF-8):	Pliki programistyczne GNU Radio
 Group:		Applications/Engineering
 Requires:	%{name} = %{version}-%{release}
 Requires:	boost-devel
 Obsoletes:	usrp-devel < 3.3.0-1
 
 %description devel
-GNU Radio Headers.
+GNU Radio header files.
+
+%description devel -l pl.UTF-8
+Pliki nagłówkowe GNU Radio.
 
 %package doc
-Summary:	GNU Radio
+Summary:	GNU Radio documentation
+Summary(pl.UTF-8):	Dokumentacja do GNU Radio
 Group:		Documentation
 Requires:	%{name} = %{version}-%{release}
 BuildArch:	noarch
 
 %description doc
-GNU Radio Documentation.
+GNU Radio documentation.
+
+%description doc -l pl.UTF-8
+Dokumentacja do GNU Radio.
 
 %package examples
 Summary:	GNU Radio examples
+Summary(pl.UTF-8):	Przykłady do GNU Radio
 Group:		Documentation
 Requires:	%{name} = %{version}-%{release}
 BuildArch:	noarch
 
 %description examples
 GNU Radio examples.
+
+%description examples -l pl.UTF-8
+Przykłady do GNU Radio.
 
 %prep
 %setup -q
