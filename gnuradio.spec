@@ -77,6 +77,7 @@ BuildRequires:	qt5-build >= 5
 BuildRequires:	qt5-qmake >= 5
 BuildRequires:	qwt5-devel
 BuildRequires:	rpm-build >= 4.6
+BuildRequires:	rpmbuild(macros) >= 1.605
 BuildRequires:	sip-PyQt5
 BuildRequires:	sphinx-pdg
 BuildRequires:	swig-python >= 3.0.8
