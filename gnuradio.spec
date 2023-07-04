@@ -17,6 +17,7 @@ Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
 Patch0:		link.patch
 Patch1:		python-libdir.patch
 Patch2:		%{name}-boost.patch
+Patch3:		gcc13.patch
 URL:		http://www.gnuradio.org/
 BuildRequires:	Qt5Core-devel >= 5
 BuildRequires:	Qt5DBus-devel >= 5
@@ -156,6 +157,7 @@ Przykłady do GNU Radio.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %{__mkdir_p} build
