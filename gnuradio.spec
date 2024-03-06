@@ -9,7 +9,7 @@ Summary:	Software defined radio framework
 Summary(pl.UTF-8):	Szkielet radia programowego
 Name:		gnuradio
 Version:	3.8.0.0
-Release:	15
+Release:	16
 License:	GPL v3
 Group:		Applications/Engineering
 Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
