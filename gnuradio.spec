@@ -9,16 +9,16 @@ Summary:	Software defined radio framework
 Summary(pl.UTF-8):	Szkielet radia programowego
 Name:		gnuradio
 Version:	3.8.0.0
-Release:	16
+Release:	17
 License:	GPL v3
 Group:		Applications/Engineering
-Source0:	http://gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
+Source0:	https://www.gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
 # Source0-md5:	85e1ed4b18c46227731d83f8c3fbe45a
 Patch0:		link.patch
 Patch1:		python-libdir.patch
 Patch2:		%{name}-boost.patch
 Patch3:		gcc13.patch
-URL:		http://www.gnuradio.org/
+URL:		https://www.gnuradio.org/
 BuildRequires:	Qt5Core-devel >= 5
 BuildRequires:	Qt5DBus-devel >= 5
 BuildRequires:	Qt5Declarative-devel >= 5
