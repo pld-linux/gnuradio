@@ -3,13 +3,13 @@
 # - GUIs split/subpackages?
 #
 # Conditional build:
-%bcond_with	uhd	# UHD driver support
+%bcond_without	uhd	# UHD driver support
 
 Summary:	Software defined radio framework
 Summary(pl.UTF-8):	Szkielet radia programowego
 Name:		gnuradio
 Version:	3.10.11.0
-Release:	0.1
+Release:	1
 License:	GPL v3
 Group:		Applications/Engineering
 #Source0:	https://www.gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
@@ -44,8 +44,8 @@ BuildRequires:	cppzmq-devel
 BuildRequires:	doxygen >= 1.5
 BuildRequires:	fftw3-devel >= 3.0
 BuildRequires:	fftw3-single-devel >= 3.0
-BuildRequires:	gsl-devel >= 1.10
 BuildRequires:	gmp-c++-devel
+BuildRequires:	gsl-devel >= 1.10
 # GI
 BuildRequires:	gtk+3 >= 3.10.8
 BuildRequires:	ice-devel
@@ -180,17 +180,15 @@ export LDFLAGS="%{rpmldflags}"
 	-DENABLE_GR_FEC=ON \
 	-DENABLE_GR_FFT=ON \
 	-DENABLE_GR_FILTER=ON \
-	-DENABLE_GR_IIO=ON \
 	-DENABLE_GR_MODTOOL=ON \
 	-DENABLE_GR_NETWORK=ON \
 	-DENABLE_GR_NOAA=ON \
 	-DENABLE_GR_PAGER=ON \
 	-DENABLE_GR_PDU=ON \
 	-DENABLE_GR_QTGUI=ON \
-	-DENABLE_GR_SOAPY=ON \
 	-DENABLE_GR_TRELLIS=ON \
-	%{?with_uhd:-DENABLE_GR_UHD=ON} \
-	%{?with_uhd:-DENABLE_UHD_RFNOC=ON} \
+	%{cmake_on_off uhd ENABLE_GR_UHD} \
+	%{cmake_on_off uhd DENABLE_UHD_RFNOC} \
 	-DENABLE_GR_UTILS=ON \
 	-DENABLE_GR_VIDEO_SDL=ON \
 	-DENABLE_GR_VOCODER=ON \
@@ -200,7 +198,6 @@ export LDFLAGS="%{rpmldflags}"
 	-DENABLE_GRC=ON \
 	-DENABLE_GRUEL=ON \
 	-DENABLE_PYTHON=ON \
-	-DENABLE_VOLK=ON \
 	-DSYSCONFDIR=%{_sysconfdir} \
 	..
 %{__make}
@@ -235,21 +232,26 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README.hacking
+%doc README.md
 %attr(755,root,root) %{_bindir}/gnuradio-*
 %attr(755,root,root) %{_bindir}/gr-*
 %attr(755,root,root) %{_bindir}/gr_*
 %attr(755,root,root) %{_bindir}/grcc
 %attr(755,root,root) %{_bindir}/polar_channel_construction
-%attr(755,root,root) %{_bindir}/volk-config-info
-%attr(755,root,root) %{_bindir}/volk_modtool
-%attr(755,root,root) %{_bindir}/volk_profile
+%{?with_uhd:%{_bindir}/uhd_*}
 %attr(755,root,root) %{_libdir}/libgnuradio-*.so.*.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgnuradio-*.so.3.8.0
-%attr(755,root,root) %{_libdir}/libvolk.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgnuradio-*.so.3.10.11
 %dir %{_sysconfdir}/gnuradio
 %dir %{_sysconfdir}/gnuradio/conf.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gnuradio/conf.d/*.conf
+
+%{_mandir}/man1/gnuradio-*.1*
+%{_mandir}/man1/gr-*.1*
+%{_mandir}/man1/gr_*.1*
+%{_mandir}/man1/grcc.1*
+%{_mandir}/man1/polar_channel_construction.1*
+%{_mandir}/man1/tags_demo.1*
+%{?with_uhd:%{_mandir}/man1/uhd_*.1*}
 
 %dir %{py3_sitedir}/gnuradio
 %{py3_sitedir}/gnuradio/*.py*
@@ -261,9 +263,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{py3_sitedir}/gnuradio/audio/*.so
 %{py3_sitedir}/gnuradio/audio/*.py*
 
+%{py3_sitedir}/gnuradio/bindtool
+
 %dir %{py3_sitedir}/gnuradio/blocks
 %attr(755,root,root) %{py3_sitedir}/gnuradio/blocks/*.so
 %{py3_sitedir}/gnuradio/blocks/*.py*
+
+%{py3_sitedir}/gnuradio/blocktool
 
 %dir %{py3_sitedir}/gnuradio/channels
 %attr(755,root,root) %{py3_sitedir}/gnuradio/channels/*.so
@@ -278,7 +284,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %{py3_sitedir}/gnuradio/dtv
 %{py3_sitedir}/gnuradio/dtv/*.py*
-%attr(755,root,root) %{py3_sitedir}/gnuradio/dtv/_dtv_swig.so
+%attr(755,root,root) %{py3_sitedir}/gnuradio/dtv/dtv_python.*.so
 
 %dir %{py3_sitedir}/gnuradio/fec
 %attr(755,root,root) %{py3_sitedir}/gnuradio/fec/*.so
@@ -301,7 +307,19 @@ rm -rf $RPM_BUILD_ROOT
 %{py3_sitedir}/gnuradio/gr/*.py*
 
 %{py3_sitedir}/gnuradio/grc
-%{py3_sitedir}/gnuradio/gru
+%{py3_sitedir}/gnuradio/modtool
+
+%dir %{py3_sitedir}/gnuradio/network
+%{py3_sitedir}/gnuradio/network/*.py
+%attr(755,root,root) %{py3_sitedir}/gnuradio/network/network_python.*.so
+
+%dir %{py3_sitedir}/gnuradio/pdu
+%{py3_sitedir}/gnuradio/pdu/*.py
+%attr(755,root,root) %{py3_sitedir}/gnuradio/pdu/pdu_python.*.so
+
+%dir %{py3_sitedir}/pmt
+%{py3_sitedir}/pmt/*.py
+%attr(755,root,root) %{py3_sitedir}/pmt/pmt_python.*.so
 
 %dir %{py3_sitedir}/gnuradio/qtgui
 %attr(755,root,root) %{py3_sitedir}/gnuradio/qtgui/*.so
@@ -310,6 +328,12 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{py3_sitedir}/gnuradio/trellis
 %attr(755,root,root) %{py3_sitedir}/gnuradio/trellis/*.so
 %{py3_sitedir}/gnuradio/trellis/*.py*
+
+%if %{with uhd}
+%dir %{py3_sitedir}/gnuradio/uhd
+%{py3_sitedir}/gnuradio/uhd/*.py
+%attr(755,root,root) %{py3_sitedir}/gnuradio/uhd/uhd_python.*.so
+%endif
 
 %dir %{py3_sitedir}/gnuradio/video_sdl
 %attr(755,root,root) %{py3_sitedir}/gnuradio/video_sdl/*.so
@@ -327,32 +351,20 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{py3_sitedir}/gnuradio/zeromq/*.so
 %{py3_sitedir}/gnuradio/zeromq/*.py*
 
-%dir %{py3_sitedir}/pmt
-%attr(755,root,root) %{py3_sitedir}/pmt/_pmt_swig.so
-%{py3_sitedir}/pmt/*.py*
-%{py3_sitedir}/volk_modtool
-
 %{_datadir}/gnuradio
 %exclude %{_datadir}/gnuradio/examples
 
-%dir %{_libexecdir}/gnuradio
-%attr(755,root,root) %{_libexecdir}/gnuradio/grc_setup_freedesktop
-
-%{_desktopdir}/gnuradio-grc.desktop
-%{_iconsdir}/hicolor/*x*/apps/gnuradio-grc.png
-%{_datadir}/mime/packages/gnuradio-grc.xml
+#%{_desktopdir}/gnuradio-grc.desktop
+#%{_iconsdir}/hicolor/*x*/apps/gnuradio-grc.png
+#%{_datadir}/mime/packages/gnuradio-grc.xml
 
 %files devel
 %defattr(644,root,root,755)
 %{_includedir}/gnuradio
 %{_includedir}/pmt
-%{_includedir}/volk
 %attr(755,root,root) %{_libdir}/libgnuradio-*.so
-%attr(755,root,root) %{_libdir}/libvolk.so
 %{_pkgconfigdir}/gnuradio-*.pc
-%{_pkgconfigdir}/volk.pc
 %{_libdir}/cmake/gnuradio
-%{_libdir}/cmake/volk
 
 %files doc
 %defattr(644,root,root,755)
