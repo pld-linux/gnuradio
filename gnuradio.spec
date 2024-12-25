@@ -8,16 +8,13 @@
 Summary:	Software defined radio framework
 Summary(pl.UTF-8):	Szkielet radia programowego
 Name:		gnuradio
-Version:	3.8.0.0
-Release:	17
+Version:	3.10.11.0
+Release:	0.1
 License:	GPL v3
 Group:		Applications/Engineering
-Source0:	https://www.gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
-# Source0-md5:	85e1ed4b18c46227731d83f8c3fbe45a
-Patch0:		link.patch
-Patch1:		python-libdir.patch
-Patch2:		%{name}-boost.patch
-Patch3:		gcc13.patch
+#Source0:	https://www.gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
+Source0:	https://github.com/gnuradio/gnuradio/archive/v%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	f31c96146a3cec787a59cf70144c846e
 URL:		https://www.gnuradio.org/
 BuildRequires:	Qt5Core-devel >= 5
 BuildRequires:	Qt5DBus-devel >= 5
@@ -65,6 +62,7 @@ BuildRequires:	python3 >= 1:3.6.5
 BuildRequires:	python3-Mako >= 0.9.1
 # R/S instead?
 BuildRequires:	python3-PyOpenGL
+BuildRequires:	python3-PyQt5-devel
 # R/S instead?
 BuildRequires:	python3-PyYAML >= 3.10
 BuildRequires:	python3-click
@@ -78,11 +76,11 @@ BuildRequires:	qt5-qmake >= 5
 BuildRequires:	qwt5-devel
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.605
-BuildRequires:	sip-PyQt5
 BuildRequires:	sphinx-pdg
 BuildRequires:	swig-python >= 3.0.8
 BuildRequires:	texlive-latex
 %{?with_uhd:BuildRequires:	uhd-devel >= 3.0.0}
+BuildRequires:	volk-devel
 BuildRequires:	xdg-utils
 BuildRequires:	xmlto
 BuildConflicts:	python-thrift
@@ -155,10 +153,6 @@ Przykłady do GNU Radio.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %build
 %{__mkdir_p} build
@@ -168,24 +162,45 @@ export CXXFLAGS="%{rpmcxxflags} %{rpmcppflags}"
 export LDFLAGS="%{rpmldflags}"
 %cmake -Wno-dev \
 	-DCMAKE_BUILD_TYPE=None \
-	-DENABLE_DOXYGEN=FORCE \
-	-DENABLE_GR_ATSC=FORCE \
-	-DENABLE_GR_AUDIO=FORCE \
-	-DENABLE_GRC=FORCE \
-	-DENABLE-GR_COMEDI=FORCE \
-	-DENABLE_GR_CORE=FORCE \
-	-DENABLE_GR_FCD=FORCE \
-	-DENABLE_GR_NOAA=FORCE \
-	-DENABLE_GR_PAGER=FORCE \
-	-DENABLE_GR_TRELLIS=FORCE \
-	-DENABLE_GRUEL=FORCE \
-	%{?with_uhd:-DENABLE_GR_UHD=FORCE} \
-	-DENABLE_GR_UTILS=FORCE \
-	-DENABLE_GR_VIDEO_SDL=FORCE \
-	-DENABLE_GR_VOCODER=FORCE \
-	-DENABLE_GR_WXGUI=FORCE \
-	-DENABLE_PYTHON=FORCE \
-	-DENABLE_VOLK=FORCE \
+	-DENABLE_DOXYGEN=ON \
+	-DENABLE_COMMON_PCH=ON \
+	-DENABLE_GNURADIO_RUNTIME=ON \
+	-DENABLE_GR_ANALOG=ON \
+	-DENABLE_GR_ATSC=ON \
+	-DENABLE_GR_AUDIO=ON \
+	-DENABLE_GR_BLOCKS=ON \
+	-DENABLE_GR_BLOCKTOOL=ON \
+	-DENABLE_GR_CHANNELS=ON \
+	-DENABLE-GR_COMEDI=ON \
+	-DENABLE_GR_CORE=ON \
+	-DENABLE_GR_CTRLPORT=ON \
+	-DENABLE_GR_DIGITAL=ON \
+	-DENABLE_GR_DTV=ON \
+	-DENABLE_GR_FCD=ON \
+	-DENABLE_GR_FEC=ON \
+	-DENABLE_GR_FFT=ON \
+	-DENABLE_GR_FILTER=ON \
+	-DENABLE_GR_IIO=ON \
+	-DENABLE_GR_MODTOOL=ON \
+	-DENABLE_GR_NETWORK=ON \
+	-DENABLE_GR_NOAA=ON \
+	-DENABLE_GR_PAGER=ON \
+	-DENABLE_GR_PDU=ON \
+	-DENABLE_GR_QTGUI=ON \
+	-DENABLE_GR_SOAPY=ON \
+	-DENABLE_GR_TRELLIS=ON \
+	%{?with_uhd:-DENABLE_GR_UHD=ON} \
+	%{?with_uhd:-DENABLE_UHD_RFNOC=ON} \
+	-DENABLE_GR_UTILS=ON \
+	-DENABLE_GR_VIDEO_SDL=ON \
+	-DENABLE_GR_VOCODER=ON \
+	-DENABLE_GR_WAVELET=ON \
+	-DENABLE_GR_WXGUI=ON \
+	-DENABLE_GR_ZEROMQ=ON \
+	-DENABLE_GRC=ON \
+	-DENABLE_GRUEL=ON \
+	-DENABLE_PYTHON=ON \
+	-DENABLE_VOLK=ON \
 	-DSYSCONFDIR=%{_sysconfdir} \
 	..
 %{__make}
@@ -211,12 +226,6 @@ for f in *.cmake; do
 			;;
 	esac
 done
-
-# obsolete theme
-%{__rm} -r $RPM_BUILD_ROOT%{_iconsdir}/gnome
-
-# remove binary from noarch examples
-%{__rm} $RPM_BUILD_ROOT%{_datadir}/gnuradio/examples/{audio/dial_tone,qt-gui/display_qt}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
