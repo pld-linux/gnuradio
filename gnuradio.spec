@@ -38,7 +38,7 @@ BuildRequires:	alsa-lib-devel >= 0.9
 BuildRequires:	boost-devel >= 1.53
 # GI
 BuildRequires:	cairo-gobject >= 1.0
-BuildRequires:	cmake >= 3.8
+BuildRequires:	cmake >= 3.16
 BuildRequires:	cppunit-devel >= 1.9.14
 BuildRequires:	cppzmq-devel
 BuildRequires:	doxygen >= 1.5
