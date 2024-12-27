@@ -9,7 +9,7 @@ Summary:	Software defined radio framework
 Summary(pl.UTF-8):	Szkielet radia programowego
 Name:		gnuradio
 Version:	3.10.11.0
-Release:	1
+Release:	2
 License:	GPL v3
 Group:		Applications/Engineering
 #Source0:	https://www.gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
@@ -223,6 +223,9 @@ for f in *.cmake; do
 			;;
 	esac
 done
+
+# remove binary from noarch examples
+%{__rm} $RPM_BUILD_ROOT%{_datadir}/gnuradio/examples/{audio/dial_tone,qt-gui/display_qt%{?with_uhd:,uhd/tags_demo}}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
