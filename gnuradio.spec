@@ -8,17 +8,16 @@
 Summary:	Software defined radio framework
 Summary(pl.UTF-8):	Szkielet radia programowego
 Name:		gnuradio
-Version:	3.10.11.0
-Release:	8
+Version:	3.10.12.0
+Release:	1
 License:	GPL v3
 Group:		Applications/Engineering
 #Source0:	https://www.gnuradio.org/releases/gnuradio/%{name}-%{version}.tar.gz
 Source0:	https://github.com/gnuradio/gnuradio/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	f31c96146a3cec787a59cf70144c846e
+# Source0-md5:	2230bcaa4d5bbaf9e9b73744b43e8bf3
 URL:		https://www.gnuradio.org/
 BuildRequires:	Qt5Core-devel >= 5
 BuildRequires:	Qt5DBus-devel >= 5
-BuildRequires:	Qt5Declarative-devel >= 5
 BuildRequires:	Qt5Designer-devel >= 5
 BuildRequires:	Qt5Gui-devel >= 5
 BuildRequires:	Qt5Help-devel >= 5
@@ -243,7 +242,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/polar_channel_construction
 %{?with_uhd:%{_bindir}/uhd_*}
 %attr(755,root,root) %{_libdir}/libgnuradio-*.so.*.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgnuradio-*.so.3.10.11
+%attr(755,root,root) %ghost %{_libdir}/libgnuradio-*.so.3.10.12
 %dir %{_sysconfdir}/gnuradio
 %dir %{_sysconfdir}/gnuradio/conf.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gnuradio/conf.d/*.conf
